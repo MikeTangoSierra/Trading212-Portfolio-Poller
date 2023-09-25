@@ -13,3 +13,7 @@ is_market_open = time_in_range(start, end, current)
 while is_market_open:
     final_portfolio_value()
     sleep_function(seconds=15)
+else:
+    print("Both UK and US Markets closed! Account value will only change during opening hours (If any trades are open)")
+    final_portfolio_value()
+    sleep_function(seconds=15)
