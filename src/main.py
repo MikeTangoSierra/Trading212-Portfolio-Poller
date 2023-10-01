@@ -16,5 +16,3 @@ def return_portfolio_value():
 @app.route('/portfoliopostions', methods=['GET'])
 def return_portfolio_positions():
     return get_portfolio_positions()
-
-app.run()
