@@ -1,6 +1,4 @@
 import flask
-import pprint
-import json
 from functions.time_functions import *
 from functions.transform_data_functions import *
 from functions.get_data_functions import *
