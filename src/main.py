@@ -6,11 +6,20 @@ from functions.get_data_functions import *
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
 
-# Get portfolio value and expose it on /portfoliovalue endpoint
+# Get overall portfolio equity and exposse it on /portfoliovalue endpoint
 @app.route('/portfoliovalue', methods=['GET'])
-def return_portfolio_value():
+def portfolio_value():
     while time_in_range(start, end, current):
-        return final_portfolio_value()
+        return overall_portfolio_value()
+    else:
+        return("MARKET CLOSED")
+        # Need to update this to return "MARKET CLOSED + PORTFOLIO CLOSING VALUE"
+
+# Get portfolio profit and loss and expose it on /profitloss endpoint
+@app.route('/profitloss', methods=['GET'])
+def profit_loss():
+    while time_in_range(start, end, current):
+        return overall_profit_loss()
     else:
         return("MARKET CLOSED")
         # Need to update this to return "MARKET CLOSED + PORTFOLIO CLOSING VALUE"

@@ -5,12 +5,11 @@ equity_base_api_path = "/equity/"
 auth_header = {"Authorization": "<YOUR_API_TOKEN>"}
 
 # Get account equity info
-def get_account_equity():
+def get_account_equity_info():
   equity_cash_api_endpoint = base_api_path + equity_base_api_path + "account/cash"
   account_equity_call = requests.get(equity_cash_api_endpoint, headers=auth_header)
   account_equity_call_json = account_equity_call.json()
-  account_equity = account_equity_call_json.get('total')
-  return(account_equity)
+  return(account_equity_call_json)
 
 # Get account base currency
 def get_account_base_currency():
