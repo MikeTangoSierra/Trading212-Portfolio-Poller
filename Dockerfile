@@ -1,9 +1,20 @@
 FROM python:alpine3.18
 
+# Set BUILD ARGS (to be overwritten at build time)
+# Set as placeholder values (T212_API_TOKEN not an actual secret value)
+ARG T212_API_TOKEN="1234adiadimai23923"
+ARG T212_BASE_API_PATH="https://demo.trading212.com/api/v0/"
+
+
+# Set ENVS FROM BUILD ARGS (Allow us to set our environment variables dynamically)
+ENV T212_API_TOKEN=$T212_API_TOKEN
+ENV T212_BASE_API_PATH=$T212_BASE_API_PATH
+
 # Set workdir
 WORKDIR /app
 
 # Copy requirements.txt and use it to install dependencies
+# I SHOULD GENERATE A NEW requirements.txt before any merge
 COPY requirements.txt requirements.txt
 RUN pip3 install -r requirements.txt
 
