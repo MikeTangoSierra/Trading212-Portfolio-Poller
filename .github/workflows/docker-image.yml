@@ -15,4 +15,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image
+      # Need to update the below to pass in build args to dynamically set environment variables from GitHub secrets at build time.
+      # A good example -> docker build --build-arg var_name=varvalue
       run: docker build . --file Dockerfile --tag trading212poller:$(date +%s)
