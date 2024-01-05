@@ -1,2 +1,27 @@
-# Trading212Poller
-'Poller' to hit the Trading212 API and grab the value of the API token's portfolio, the currency the portfolio is in and then print the value + the currency of said value every 15 seconds. 
+# Trading212-Portfolio-Poller
+
+A Python based application to reach out to the Trading212 API and grab a some statistics about your personal portfolio then expose them on a API endpoint using flask.
+
+## Statistics We Get
+
+We currently retrieve the following statistics and expose them on a flask endpoint:
+- Overall Portfolio Value
+- Currently Open Positions (JSON Array Of Objects)
+- Currently Open Biggest Winning Position
+- Currently Open Biggest Losing Position
+
+## Coming Soon
+- Functionality to store statistics within a database
+- Variablised inputs for application passed in via Dockerfile (Which API endpoint to use, API Key/Token, Database Endpoint/Credentials and more!)
+
+## Usage
+
+- COMING SOON
+
+## Contributing
+
+- COMING SOON
+
+## License
+
+[MIT](https://choosealicense.com/licenses/mit/)
