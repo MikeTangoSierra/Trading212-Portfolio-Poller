@@ -2,6 +2,7 @@ import flask
 from functions.time_functions import *
 from functions.transform_data_functions import *
 from functions.get_data_functions import *
+from functions.write_to_database import *
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
@@ -38,3 +39,7 @@ def return_current_biggest_losing_position():
 @app.route('/currentbiggestwinner', methods=['GET'])
 def return_current_biggest_winning_position():
     return currently_open_biggest_winner()
+
+# Create our databases
+create_mongo_db("profit_loss")
+create_mongo_db("open_portfolio_postions")
