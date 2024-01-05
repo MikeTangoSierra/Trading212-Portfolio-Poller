@@ -5,7 +5,7 @@ import os
 API_TOKEN = os.environ['T212_API_TOKEN']
 BASE_API_PATH = os.environ['T212_BASE_API_PATH']
 EQUITY_BASE_API_PATH = "/equity/"
-AUTH_HEADER = {"Authorization" + ":" + API_TOKEN}
+AUTH_HEADER = {"Authorization": str(API_TOKEN)}
 
 # Get account equity info
 def get_account_equity():
