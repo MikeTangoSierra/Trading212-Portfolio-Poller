@@ -46,7 +46,7 @@ def return_current_biggest_winning_position():
     return currently_open_biggest_winner()
 
 
-# I'LL MOVE THIS TO A SEPERATE FILE AND CALL THAT FILE HERE WHEN I'VE FINISHED IT/IT WORKS AND BEFORE MERGE
+# I'LL MOVE THIS TO A SEPARATE FILE AND CALL THAT FILE HERE WHEN I'VE FINISHED IT/IT WORKS AND BEFORE MERGE
 # Set some DB related vars
 profit_loss_db = "profit_loss"
 overall_profit_loss_col = "profit_loss"
