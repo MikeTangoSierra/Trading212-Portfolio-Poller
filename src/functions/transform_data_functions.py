@@ -1,4 +1,3 @@
-import json
 from functions.get_data_functions import *
 from functions.time_functions import *
 
@@ -17,15 +16,15 @@ def overall_profit_loss():
 
 # Call functions from get_data_function to get currently open positions. Loop over our postions and find our biggest losing position
 def currently_open_biggest_loser():
-  profit_losses = {}
-  portfolio_positions = get_portfolio_positions()
-  for position in portfolio_positions:
-      ticker = (position['ticker'])
-      ppl = (position['ppl'])
-      profit_losses.update({ticker:ppl})
-  biggest_loser_ticker = min(profit_losses, key=profit_losses.get)
-  biggest_loser_value  = min(profit_losses.values())
-  return(biggest_loser_ticker + ":" + " " + str(biggest_loser_value))
+    profit_losses = {}
+    portfolio_positions = get_portfolio_positions()
+    for position in portfolio_positions:
+        ticker = (position['ticker'])
+        ppl = (position['ppl'])
+        profit_losses.update({ticker:ppl})
+    biggest_loser_ticker = min(profit_losses, key=profit_losses.get)
+    biggest_loser_value  = min(profit_losses.values())
+    return(biggest_loser_ticker + ":" + " " + str(biggest_loser_value))
 
 # Call functions from get_data_function to get currently open positions. Loop over our postions and find our biggest winning position
 def currently_open_biggest_winner():
