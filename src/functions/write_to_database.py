@@ -16,22 +16,12 @@ def create_initial_mongodb(database, collection):
         except:
             logging.warn("WARN:" + " " + "Database:" + " " + database + " " + "already exists, skipping create")
 
-
-def write_dict_to_mongodb(database, collection, dict):
-    DICT_NAME = (dict['name'])
+# Insert a document to a mongoDB collection
+def insert_document_in_mongodb(database, collection, dict):
     DATABASE = CLIENT_CONNECTION_STRING[database]
     COL = DATABASE[collection]
-    DICT_EXISTS_IN_COL = COL.find_one({"name":str(DICT_NAME)})
 
-
-
-    if DICT_EXISTS_IN_COL:
-        try:
-            COL.update_one(dict)
-        except:
-            logging.error("ERROR:" + " " + "Failed to update collection" + " " + collection)
-    else:
-        try:
-            COL.insert_one(dict)
-        except:
-            logging.error("ERROR:" + " " + "Failed to insert collection" + " " + collection)
+    try:
+        COL.insert_one(dict)
+    except:
+        logging.error("ERROR:" + " " + "Failed to insert document into collection" + " " + collection)
