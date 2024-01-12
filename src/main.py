@@ -1,21 +1,20 @@
 import flask
+import time
 import os
 from functions.time_functions import *
 from functions.transform_data_functions import *
 from functions.get_data_functions import *
 
+# Application Configuration
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
+database_write_start_time = time.monotonic()
 
 
 # Get overall portfolio equity and exposse it on /portfoliovalue endpoint
 @app.route('/portfoliovalue', methods=['GET'])
 def portfolio_value():
-    while time_in_range(start, end, current):
-        return overall_portfolio_value()
-    else:
-        return ("MARKET CLOSED")
-        # Need to update this to return "MARKET CLOSED + PORTFOLIO CLOSING VALUE"
+    return overall_portfolio_value()
 
 
 # Get portfolio profit and loss and expose it on /profitloss endpoint
@@ -46,5 +45,7 @@ def return_current_biggest_winning_position():
     return currently_open_biggest_winner()
 
 
-# Call our database.py script
-os.system("python /app/src/database.py")
+# Call our database.py script every 60 seconds from the database_write_start_time
+while True:
+    os.system("python /app/src/database.py")
+    time.sleep(60.0 - ((time.monotonic() - database_write_start_time) % 60.0))

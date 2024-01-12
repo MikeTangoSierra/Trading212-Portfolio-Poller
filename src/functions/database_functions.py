@@ -6,17 +6,6 @@ CLIENT_CONNECTION_STRING = pymongo.MongoClient("mongodb://mongodb:27017/")
 LIST_EXISTING_DBS = CLIENT_CONNECTION_STRING.list_database_names()
 
 
-def create_initial_mongodb(database, collection):
-    DATABASE = CLIENT_CONNECTION_STRING[database]
-    if database not in LIST_EXISTING_DBS:
-        try:
-            COL = DATABASE[collection]
-            DEFAULT_DICT = {"key": "default_col"}
-            COL.insert_one(DEFAULT_DICT)
-        except:
-            logging.warn("WARN:" + " " + "Database:" + " " + database + " " + "already exists, skipping create")
-
-
 # Insert a document to a mongoDB collection
 def insert_document_in_mongodb(database, collection, dict):
     DATABASE = CLIENT_CONNECTION_STRING[database]
@@ -26,3 +15,14 @@ def insert_document_in_mongodb(database, collection, dict):
         COL.insert_one(dict)
     except:
         logging.error("ERROR:" + " " + "Failed to insert document into collection" + " " + collection)
+
+
+# Check if a docuemnt exists in our mongoDB collection (based on the date/time the document was written to our collection)
+def check_if_document_exists_in_mongodb(database, collection, dict):
+    DATABASE = CLIENT_CONNECTION_STRING[database]
+    COL = DATABASE[collection]
+
+    if DATABASE.COL.count_documents(dict, limit=1):
+        return True
+    else:
+        return False
