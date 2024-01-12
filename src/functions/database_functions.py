@@ -16,6 +16,7 @@ def create_initial_mongodb(database, collection):
         except:
             logging.warn("WARN:" + " " + "Database:" + " " + database + " " + "already exists, skipping create")
 
+
 # Insert a document to a mongoDB collection
 def insert_document_in_mongodb(database, collection, dict):
     DATABASE = CLIENT_CONNECTION_STRING[database]
