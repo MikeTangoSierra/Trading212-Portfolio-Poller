@@ -17,12 +17,15 @@ def insert_document_in_mongodb(database, collection, dict):
         logging.error("ERROR:" + " " + "Failed to insert document into collection" + " " + collection)
 
 
-# Check if a docuemnt exists in our mongoDB collection (based on the date/time the document was written to our collection)
+# Check if a document exists in our mongoDB collection (based on the date/time the document was written to our
+# collection)
 def check_if_document_exists_in_mongodb(database, collection, dict):
     DATABASE = CLIENT_CONNECTION_STRING[database]
     COL = DATABASE[collection]
+    UPDATED_TIME = dict.get('updated_time')
 
-    if DATABASE.COL.count_documents(dict, limit=1):
-        return True
-    else:
-        return False
+    if not UPDATED_TIME == "None":
+        if DATABASE.COL.count_documents({'updated_time': UPDATED_TIME}, limit=1):
+            return True
+        else:
+            return False
