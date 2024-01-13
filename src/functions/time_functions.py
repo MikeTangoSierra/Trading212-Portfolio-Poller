@@ -1,5 +1,4 @@
 from datetime import datetime
-import time
 
 
 # Function to return current date and time in %d/%m/%Y %H:%M:%S" format
