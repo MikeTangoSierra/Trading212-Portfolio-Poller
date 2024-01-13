@@ -45,8 +45,9 @@ def return_current_biggest_winning_position():
     return currently_open_biggest_winner()
 
 
-# Call our database.py script every 60 seconds from the database_write_start_time
-# I NEED TO ADD FUNCTIONALITY SO THIS DOESN'T RUN WHEN THE MARKETS ARE CLOSED (9AM - 9PM GMT/BST)
+# Call our database.py script every 60 seconds from the database_write_start_time (I should probably update this to
+# be only every 5 minutes) I NEED TO ADD FUNCTIONALITY SO THIS DOESN'T RUN WHEN THE MARKETS ARE CLOSED (9AM - 9PM
+# GMT/BST)
 while True:
     os.system("python /app/src/database.py")
     time.sleep(60.0 - ((time.monotonic() - database_write_start_time) % 60.0))
