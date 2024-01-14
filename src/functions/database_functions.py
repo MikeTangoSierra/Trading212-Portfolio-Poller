@@ -29,3 +29,19 @@ def check_if_document_exists_in_mongodb(database, collection, dict):
             return True
         else:
             return False
+
+
+# Get the biggest winning position for a certain time period
+# Use MongoDB queries for this and minimal python code
+# Try something like this https://www.mongodb.com/community/forums/t/fetch-data-with-max-and-between-condition/3973
+def get_biggest_winning_position(database, collection, time_period):
+    print("working on it!")
+
+
+# Get the biggest losing position for a certain time period
+# Use MongoDB queries for this and minimal python code
+# Try something like this https://www.mongodb.com/community/forums/t/fetch-data-with-max-and-between-condition/3973
+def get_losing_winning_position(database, collection, time_period):
+    print("working on it!")
+
+# Delete a document from a collection based on it's last_updated value

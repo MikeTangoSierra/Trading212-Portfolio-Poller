@@ -51,10 +51,19 @@ def return_current_biggest_winning_position():
     return currently_open_biggest_winner()
 
 
-# Call our database.py script every 60 seconds from the database_write_start_time (I should probably update this to
-# be only every 5 minutes) I NEED TO ADD FUNCTIONALITY SO THIS DOESN'T RUN WHEN THE MARKETS ARE CLOSED (9AM - 9PM
-# GMT/BST)
+# Call our database.py script every 60 seconds from the database_write_start_time
 if is_market_open():
     while True:
         os.system("python /app/src/database.py")
         time.sleep(60.0 - ((time.monotonic() - database_write_start_time) % 60.0))
+
+# Query database and return the following stats on different endpoints (use functions in database_functions.py for this, stick to DRY!)
+# Portfolio gain/loss for the quarter
+# Portfolio gain/loss for the month
+# Portfolio gain/loss for the week
+# Portfolio gain/loss for the day
+# Biggest gain/loss (position) for the quarter
+# Biggest gain/loss (position) for the month
+# Biggest gain/loss (position) for the week
+# Biggest gain/loss (position) for the day
+

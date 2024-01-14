@@ -7,7 +7,6 @@ from functions.time_functions import *
 # Logging config - This needs some work
 logging.basicConfig(filename='database.log', encoding='utf-8', level=logging.DEBUG)
 
-
 # Call date time function to set current date and time
 write_date_time = current_date_and_time()
 
@@ -15,7 +14,7 @@ write_date_time = current_date_and_time()
 profit_loss_db = "profit_loss"
 profit_loss_col = "profit_loss"
 profit_loss_value = overall_profit_loss()
-profit_loss_dict = {"profit_loss_value": str(profit_loss_value), "updated_time": str(write_date_time)}
+profit_loss_dict = {"profit_loss_value": str(profit_loss_value), "last_updated": str(write_date_time)}
 
 # Set some vars for open portfolio positions
 open_positions_db = "open_portfolio_positions"
@@ -40,7 +39,7 @@ for position in unformatted_open_positions_values:
                            "initialFillDate": str(position['initialFillDate']),
                            "frontend": str(position['frontend']),
                            "maxBuy": str(position['maxBuy']), "maxSell": str(position['maxSell']),
-                           "pieQuantity": str(position['pieQuantity']), "updated_time": str(write_date_time)}
+                           "pieQuantity": str(position['pieQuantity']), "last_updated": str(write_date_time)}
 
     does_document_exist_in_collection = check_if_document_exists_in_mongodb(open_positions_db, open_positions_col,
                                                                             open_positions_dict)
@@ -48,6 +47,5 @@ for position in unformatted_open_positions_values:
         insert_document_in_mongodb(open_positions_db, open_positions_col, open_positions_dict)
 
 # If the documents in our collections are older than a certain time period, then delete them. I need to write this
-# functionality next! Consider how long we might need to refer to the documents for in later functionality.
-
-
+# functionality next! Consider how long we might need to refer to the documents for in later functionality but also
+# consider database storage!
