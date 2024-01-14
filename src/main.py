@@ -1,6 +1,7 @@
 import flask
 import time
 import os
+import logging
 from functions.time_functions import *
 from functions.transform_data_functions import *
 from functions.get_data_functions import *
@@ -9,6 +10,11 @@ from functions.get_data_functions import *
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
 database_write_start_time = time.monotonic()
+
+# Logging config - This needs some work
+logging.basicConfig(filename='application_debug.log', encoding='utf-8', level=logging.DEBUG)
+logging.basicConfig(filename='application_error.log', encoding='utf-8', level=logging.ERROR)
+logging.basicConfig(filename='application_info.log', encoding='utf-8', level=logging.INFO)
 
 
 # Get overall portfolio equity and exposse it on /portfoliovalue endpoint
@@ -20,7 +26,7 @@ def portfolio_value():
 # Get portfolio profit and loss and expose it on /profitloss endpoint
 @app.route('/profitloss', methods=['GET'])
 def profit_loss():
-    while time_in_range(start, end, current):
+    if is_market_open():
         return overall_profit_loss()
     else:
         return "MARKET CLOSED"
@@ -48,6 +54,7 @@ def return_current_biggest_winning_position():
 # Call our database.py script every 60 seconds from the database_write_start_time (I should probably update this to
 # be only every 5 minutes) I NEED TO ADD FUNCTIONALITY SO THIS DOESN'T RUN WHEN THE MARKETS ARE CLOSED (9AM - 9PM
 # GMT/BST)
-while True:
-    os.system("python /app/src/database.py")
-    time.sleep(60.0 - ((time.monotonic() - database_write_start_time) % 60.0))
+if is_market_open():
+    while True:
+        os.system("python /app/src/database.py")
+        time.sleep(60.0 - ((time.monotonic() - database_write_start_time) % 60.0))
