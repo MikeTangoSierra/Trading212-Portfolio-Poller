@@ -1,4 +1,9 @@
 from functions.get_data_functions import *
+import logging
+
+# Logging config - This needs some work
+logging.basicConfig(filename='transform_data_functions.log', encoding='utf-8', level=logging.DEBUG)
+
 
 
 # Call functions from get_data_functions to get portfolio equity (overall)

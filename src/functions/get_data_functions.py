@@ -1,5 +1,10 @@
 import requests
 import os
+import logging
+
+
+logging.basicConfig(filename='get_data_functions.log', encoding='utf-8', level=logging.DEBUG)
+
 
 # Set our required API Access Info
 API_TOKEN = os.environ['T212_API_TOKEN']

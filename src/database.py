@@ -1,7 +1,12 @@
+import logging
 from functions.transform_data_functions import *
 from functions.get_data_functions import *
 from functions.database_functions import *
 from functions.time_functions import *
+
+# Logging config - This needs some work
+logging.basicConfig(filename='database.log', encoding='utf-8', level=logging.DEBUG)
+
 
 # Call date time function to set current date and time
 write_date_time = current_date_and_time()
