@@ -14,10 +14,6 @@ We currently retrieve the following statistics and expose them on a flask endpoi
 - Currently Open Positions
 - Overall Profit/Loss
 
-## Coming Soon
-- Functionality to store statistics within a database
-- Variablised inputs for application passed in via Dockerfile (Which API endpoint to use, API Key/Token, Database Endpoint/Credentials and more!)
-
 ## Usage
 
 - COMING SOON
