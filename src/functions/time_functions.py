@@ -1,14 +1,8 @@
-import datetime
-import time
+from datetime import datetime
 
-# Set start (market open, UK), end (markets closed, UK & US) and current times. Setting here as they should never change!
-start = datetime.time(9, 0, 0)
-end = datetime.time(21, 00, 0)
-current = datetime.datetime.now().time()
 
-# Function to figure out if the time is within the range
-def time_in_range(start, end, current):
-    return start <= current <= end
-
-def sleep_function(seconds):
-    time.sleep(30)
+# Function to return current date and time in %d/%m/%Y %H:%M:%S" format
+def current_date_and_time():
+    now = datetime.now()
+    dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+    return dt_string
