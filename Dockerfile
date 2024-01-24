@@ -1,6 +1,9 @@
 FROM python:alpine3.18
 
 # Set BUILD ARGS (to be overwritten at build time)
+# These are set as build args so we don't have to commit them to our git repo
+# We can overwrite these at build time using the --build-arg flag
+# Example: docker build --build-arg T212_API_TOKEN=1234adiadimai23923 .
 # Set as placeholder values (T212_API_TOKEN not an actual secret value)
 ARG T212_API_TOKEN="1234adiadimai23923"
 ARG T212_BASE_API_PATH="https://demo.trading212.com/api/v0/"

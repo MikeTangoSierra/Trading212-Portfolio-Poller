@@ -9,6 +9,11 @@ from functions.get_data_functions import *
 # Application Configuration
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
+app.config["JSON_SORT_KEYS"] = False
+app.config["JSONIFY_PRETTYPRINT_REGULAR"] = True
+app.config["JSONIFY_MIMETYPE"] = "application/json"
+
+# Start the clock to time how long it takes to write to the database
 database_write_start_time = time.monotonic()
 
 # Logging config - This needs some work
@@ -54,7 +59,9 @@ def return_current_biggest_winning_position():
 # Call our database.py script every 60 seconds from the database_write_start_time
 if is_market_open():
     while True:
+        logging.info("Market is open - running database.py")
         os.system("python /app/src/database.py")
+        logging.info("Sleeping for 60 seconds")
         time.sleep(60.0 - ((time.monotonic() - database_write_start_time) % 60.0))
 
 # Query database and return the following stats on different endpoints (use functions in database_functions.py for this, stick to DRY!)

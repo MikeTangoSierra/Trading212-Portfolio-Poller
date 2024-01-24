@@ -2,7 +2,9 @@ import datetime
 import logging
 
 # Logging config - This needs some work
-logging.basicConfig(filename='time_functions.log', encoding='utf-8', level=logging.DEBUG)
+logging.basicConfig(filename='time_functions_debug.log', encoding='utf-8', level=logging.DEBUG)
+logging.basicConfig(filename='time_functions_error.log', encoding='utf-8', level=logging.ERROR)
+logging.basicConfig(filename='time_functions_info.log', encoding='utf-8', level=logging.INFO)
 
 
 # A small function to return true if the time is within the current time is within the range (between start and end)

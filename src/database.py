@@ -5,7 +5,9 @@ from functions.database_functions import *
 from functions.time_functions import *
 
 # Logging config - This needs some work
-logging.basicConfig(filename='database.log', encoding='utf-8', level=logging.DEBUG)
+logging.basicConfig(filename='database.debug_log', encoding='utf-8', level=logging.DEBUG)
+logging.basicConfig(filename='database_error.log', encoding='utf-8', level=logging.ERROR)
+logging.basicConfig(filename='database_info.log', encoding='utf-8', level=logging.INFO)
 
 # Call date time function to set current date and time
 write_date_time = current_date_and_time()

@@ -2,8 +2,9 @@ from functions.get_data_functions import *
 import logging
 
 # Logging config - This needs some work
-logging.basicConfig(filename='transform_data_functions.log', encoding='utf-8', level=logging.DEBUG)
-
+logging.basicConfig(filename='transform_data_functions_debug.log', encoding='utf-8', level=logging.DEBUG)
+logging.basicConfig(filename='transform_data_functions_error.log', encoding='utf-8', level=logging.ERROR)
+logging.basicConfig(filename='transform_data_functions_info.log', encoding='utf-8', level=logging.INFO)
 
 
 # Call functions from get_data_functions to get portfolio equity (overall)
@@ -34,7 +35,7 @@ def currently_open_biggest_loser():
     return biggest_loser_ticker + ":" + " " + str(biggest_loser_value)
 
 
-# Call functions from get_data_function to get currently open positions. Loop over our postions and find our biggest
+# Call functions from get_data_function to get currently open positions. Loop over our positions and find our biggest
 # winning position
 def currently_open_biggest_winner():
     profit_losses = {}

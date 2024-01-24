@@ -1,4 +1,22 @@
 # Trading212-Portfolio-Poller
+A Python based application to reach out to the Trading212 API and grab a some statistics about your personal portfolio then expose them on a API endpoint using flask.
+
+## Description
+
+This project is currently a work in progress and is not yet in a usable state. I am currently working on this project in my spare time and will update this README once the project is in a usable state.
+
+## Table Of Contents
+
+- [Installation](#installation)
+- [Usage](#usage)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Installation
+
+This project is currently a work in progress and is not yet in a usable state. I am currently working on this project in my spare time and will update this README once the project is in a usable state.
+
+## Description
 
 A Python based application to reach out to the Trading212 API and grab a some statistics about your personal portfolio then expose them on a API endpoint using flask.
 
