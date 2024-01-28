@@ -74,3 +74,4 @@ if is_market_open():
 # Biggest gain/loss (position) for the week
 # Biggest gain/loss (position) for the day
 
+#

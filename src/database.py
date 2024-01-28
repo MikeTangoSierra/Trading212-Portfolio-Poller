@@ -48,6 +48,6 @@ for position in unformatted_open_positions_values:
     if not does_document_exist_in_collection:
         insert_document_in_mongodb(open_positions_db, open_positions_col, open_positions_dict)
 
-# If the documents in our collections are older than a certain time period, then delete them. I need to write this
-# functionality next! Consider how long we might need to refer to the documents for in later functionality but also
-# consider database storage!
+# For each document in our collections are older than a year and one day time period, then call our function from
+# database_functions.py to delete them.
+

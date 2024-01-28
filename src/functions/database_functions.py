@@ -31,17 +31,40 @@ def check_if_document_exists_in_mongodb(database, collection, dict):
             return False
 
 
-# Get the biggest winning position for a certain time period
-# Use MongoDB queries for this and minimal python code
-# Try something like this https://www.mongodb.com/community/forums/t/fetch-data-with-max-and-between-condition/3973
-def get_biggest_winning_position(database, collection, time_period):
-    print("working on it!")
+# Get the biggest winning position from our specified collection over our specified time period
+def get_biggest_winning_position(database, collection, dict, time_period):
+    DATABASE = CLIENT_CONNECTION_STRING[database]
+    COL = DATABASE[collection]
+    UPDATED_TIME = dict.get('updated_time')
+
+    if not UPDATED_TIME == "None" and UPDATED_TIME > time_period:
+        try:
+            COL.find_one({"profit_loss_value": {"$gt": 0}})
+        except:
+            logging.error("ERROR:" + " " + "Failed to get biggest winning position from collection" + " " + collection)
 
 
-# Get the biggest losing position for a certain time period
-# Use MongoDB queries for this and minimal python code
-# Try something like this https://www.mongodb.com/community/forums/t/fetch-data-with-max-and-between-condition/3973
-def get_losing_winning_position(database, collection, time_period):
-    print("working on it!")
+# # Get the biggest winning position from our specified collection over our specified time period
+def get_losing_winning_position(database, collection, dict, time_period):
+    DATABASE = CLIENT_CONNECTION_STRING[database]
+    COL = DATABASE[collection]
+    UPDATED_TIME = dict.get('updated_time')
 
-# Delete a document from a collection based on it's last_updated value
+    if not UPDATED_TIME == "None" and UPDATED_TIME > time_period:
+        try:
+            COL.find_one({"profit_loss_value": {"$lt": 0}})
+        except:
+            logging.error("ERROR:" + " " + "Failed to get biggest losing position from collection" + " " + collection)
+
+
+# Delete a document from a collection based on it's last_updated being older than our delete_after_days variable
+def delete_document_from_collection(database, collection, dict, delete_after_days):
+    DATABASE = CLIENT_CONNECTION_STRING[database]
+    COL = DATABASE[collection]
+    UPDATED_TIME = dict.get('updated_time')
+
+    if not UPDATED_TIME == "None" and UPDATED_TIME < delete_after_days:
+        try:
+            COL.delete_one(dict)
+        except:
+            logging.error("ERROR:" + " " + "Failed to delete document from collection" + " " + collection)
