@@ -6,6 +6,17 @@ CLIENT_CONNECTION_STRING = pymongo.MongoClient("mongodb://mongodb:27017/")
 LIST_EXISTING_DBS = CLIENT_CONNECTION_STRING.list_database_names()
 
 
+# Return a list of existing databases in our mongoDB instance
+def list_existing_databases():
+    return LIST_EXISTING_DBS
+
+
+# Return a list of existing collections in a database
+def list_existing_collections(database):
+    DATABASE = CLIENT_CONNECTION_STRING[database]
+    return DATABASE.list_collection_names()
+
+
 # Insert a document to a mongoDB collection
 def insert_document_in_mongodb(database, collection, dict):
     DATABASE = CLIENT_CONNECTION_STRING[database]
@@ -44,4 +55,17 @@ def get_biggest_winning_position(database, collection, time_period):
 def get_losing_winning_position(database, collection, time_period):
     print("working on it!")
 
-# Delete a document from a collection based on it's last_updated value
+
+# Delete a document from a collection in MongoDB based on its updated_time being greater than time_limit_days
+def delete_document_from_mongodb(database, collection, time_limit_days):
+    DATABASE = CLIENT_CONNECTION_STRING[database]
+    COL = DATABASE[collection]
+    DOCUMENTS = COL.find({})
+
+    try:
+        for document in DOCUMENTS:
+            if document['updated_time'] < time_limit_days:
+                logging.info("INFO:" + " " + "Deleting document from collection" + " " + collection)
+                COL.delete_one(document)
+    except:
+        logging.error("ERROR:" + " " + "Failed to delete document from collection" + " " + collection)
