@@ -64,7 +64,7 @@ def delete_document_from_mongodb(database, collection, time_limit_days):
 
     try:
         for document in DOCUMENTS:
-            if document['updated_time'] < time_limit_days:
+            if document['updated_time'] > time_limit_days:
                 logging.info("INFO:" + " " + "Deleting document from collection" + " " + collection)
                 COL.delete_one(document)
     except:
