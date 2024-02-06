@@ -1,5 +1,7 @@
 import pymongo
 import logging
+from datetime import datetime, timedelta
+
 
 logging.basicConfig(filename='db_functions.log', encoding='utf-8', level=logging.DEBUG)
 CLIENT_CONNECTION_STRING = pymongo.MongoClient("mongodb://mongodb:27017/")
@@ -61,10 +63,11 @@ def delete_document_from_mongodb(database, collection, time_limit_days):
     DATABASE = CLIENT_CONNECTION_STRING[database]
     COL = DATABASE[collection]
     DOCUMENTS = COL.find({})
+    time_limit_date = datetime.today() - timedelta(days=time_limit_days)
 
     try:
         for document in DOCUMENTS:
-            if document['updated_time'] > time_limit_days:
+            if document['updated_time'] > time_limit_date:
                 logging.info("INFO:" + " " + "Deleting document from collection" + " " + collection)
                 COL.delete_one(document)
     except:
