@@ -51,8 +51,14 @@ def return_current_biggest_winning_position():
     return currently_open_biggest_winner()
 
 
-# Call our database.py script every 60 seconds from the database_write_start_time
-if is_market_open():
+# # Call our database.py script every 60 seconds from the database_write_start_time
+# if is_market_open():
+#     while True:
+#         os.system("python /app/src/database.py")
+#         time.sleep(60.0 - ((time.monotonic() - database_write_start_time) % 60.0))
+#
+
+if "test" == "test":
     while True:
         os.system("python /app/src/database.py")
         time.sleep(60.0 - ((time.monotonic() - database_write_start_time) % 60.0))
