@@ -58,10 +58,8 @@ def return_current_biggest_winning_position():
 #         time.sleep(60.0 - ((time.monotonic() - database_write_start_time) % 60.0))
 #
 
-if "test" == "test":
-    while True:
-        os.system("python /app/src/database.py")
-        time.sleep(60.0 - ((time.monotonic() - database_write_start_time) % 60.0))
+# Call our database.py script
+os.system("python /app/src/database.py")
 
 # Query database and return the following stats on different endpoints (use functions in database_functions.py for this, stick to DRY!)
 # Portfolio gain/loss for the quarter

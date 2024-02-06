@@ -69,3 +69,13 @@ def delete_document_from_mongodb(database, collection, time_limit_days):
                 COL.delete_one(document)
     except:
         logging.error("ERROR:" + " " + "Failed to delete document from collection" + " " + collection)
+
+
+# GENERATED WITH GITHUB CO-PILOT! Utilising our list_existing_databases function, define a function to loop through
+# the list of existing databases that it returns and for each collection within our databases, utilise our
+# delete_document_from_mongodb function to loop through each document within the collection and delete those that are
+# older than one year old.
+def clean_up_mongodb(time_limit_days=365):
+    for database in list_existing_databases():
+        for collection in list_existing_collections(database):
+            delete_document_from_mongodb(database, collection, 365)

@@ -1,6 +1,5 @@
-import logging
-import schedule
 import time
+import schedule
 from functions.transform_data_functions import *
 from functions.get_data_functions import *
 from functions.database_functions import *
@@ -47,15 +46,6 @@ for position in unformatted_open_positions_values:
                                                                             open_positions_dict)
     if not does_document_exist_in_collection:
         insert_document_in_mongodb(open_positions_db, open_positions_col, open_positions_dict)
-
-# GENERATED WITH GITHUB CO-PILOT! Utilising our list_existing_databases function, define a function to loop through
-# the list of existing databases that it returns and for each collection within our databases, utilise our
-# delete_document_from_mongodb function to loop through each document within the collection and delete those that are
-# older than one year old.
-def clean_up_mongodb():
-    for database in list_existing_databases():
-        for collection in list_existing_collections(database):
-            delete_document_from_mongodb(database, collection, 365)
 
 # Every 5 minutes, run our clean_up_mongodb function.
 schedule.every(5).minutes.do(clean_up_mongodb)
