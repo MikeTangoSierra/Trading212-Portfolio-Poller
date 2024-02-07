@@ -2,7 +2,6 @@ import pymongo
 import logging
 from datetime import datetime, timedelta
 
-
 logging.basicConfig(filename='db_functions.log', encoding='utf-8', level=logging.DEBUG)
 CLIENT_CONNECTION_STRING = pymongo.MongoClient("mongodb://mongodb:27017/")
 LIST_EXISTING_DBS = CLIENT_CONNECTION_STRING.list_database_names()
@@ -35,10 +34,10 @@ def insert_document_in_mongodb(database, collection, dict):
 def check_if_document_exists_in_mongodb(database, collection, dict):
     DATABASE = CLIENT_CONNECTION_STRING[database]
     COL = DATABASE[collection]
-    UPDATED_TIME = dict.get('updated_time')
+    UPDATED_TIME = dict.get('last_updated')
 
     if not UPDATED_TIME == "None":
-        if DATABASE.COL.count_documents({'updated_time': UPDATED_TIME}, limit=1):
+        if DATABASE.COL.count_documents({'last_updated': UPDATED_TIME}, limit=1):
             return True
         else:
             return False
@@ -65,14 +64,10 @@ def delete_document_from_mongodb(database, collection, time_limit_days):
     DOCUMENTS = list(COL.find({}))
     raw_time_limit_date = datetime.today() - timedelta(days=time_limit_days)
     final_time_limit_date = datetime.strptime(str(raw_time_limit_date), "%Y-%m-%d %H:%M:%S.%f")
-    print(raw_time_limit_date)
-    print(final_time_limit_date)
-    print(DOCUMENTS)
 
     try:
         for document in DOCUMENTS:
-            print(document['updated_time'])
-            updated_time_date = datetime.strptime(document['updated_time'], "%Y-%m-%d %H:%M:%S.%f")
+            updated_time_date = datetime.strptime(document['last_updated'], "%Y-%m-%d %H:%M:%S.%f")
             if updated_time_date <= final_time_limit_date:
                 logging.info("INFO:" + " " + "Deleting document from collection" + " " + collection)
                 COL.delete_one(document)
