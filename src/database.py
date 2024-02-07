@@ -47,8 +47,5 @@ for position in unformatted_open_positions_values:
     if not does_document_exist_in_collection:
         insert_document_in_mongodb(open_positions_db, open_positions_col, open_positions_dict)
 
-# Every 5 minutes, run our clean_up_mongodb function.
-schedule.every(5).minutes.do(clean_up_mongodb,time_limit_days=1)
-while True:
-    schedule.run_pending()
-    time.sleep(1)
+# Run our mongoDB cleanup functionality
+clean_up_mongodb(time_limit_days=1)

@@ -23,5 +23,5 @@ def is_market_open():
 # Function to return current date and time in %d/%m/%Y %H:%M:%S" format
 def current_date_and_time():
     current_datetime = datetime.datetime.now()
-    dt_string = current_datetime.strftime("%d/%m/%Y %H:%M:%S")
+    dt_string = current_datetime.strftime("%d/%m/%Y %H:%M:%S.%f")
     return dt_string

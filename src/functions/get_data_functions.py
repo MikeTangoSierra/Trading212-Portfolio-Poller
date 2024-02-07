@@ -9,7 +9,7 @@ logging.basicConfig(filename='get_data_functions.log', encoding='utf-8', level=l
 # Set our required API Access Info
 API_TOKEN = os.environ['T212_API_TOKEN']
 BASE_API_PATH = os.environ['T212_BASE_API_PATH']
-EQUITY_BASE_API_PATH = "/equity/"
+EQUITY_BASE_API_PATH = "equity/"
 AUTH_HEADER = {"Authorization": str(API_TOKEN)}
 
 

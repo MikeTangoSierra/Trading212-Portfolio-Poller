@@ -62,12 +62,18 @@ def get_losing_winning_position(database, collection, time_period):
 def delete_document_from_mongodb(database, collection, time_limit_days):
     DATABASE = CLIENT_CONNECTION_STRING[database]
     COL = DATABASE[collection]
-    DOCUMENTS = COL.find({})
-    time_limit_date = datetime.today() - timedelta(days=time_limit_days)
+    DOCUMENTS = list(COL.find({}))
+    raw_time_limit_date = datetime.today() - timedelta(days=time_limit_days)
+    final_time_limit_date = datetime.strptime(str(raw_time_limit_date), "%Y-%m-%d %H:%M:%S.%f")
+    print(raw_time_limit_date)
+    print(final_time_limit_date)
+    print(DOCUMENTS)
 
     try:
         for document in DOCUMENTS:
-            if document['updated_time'] > time_limit_date:
+            print(document['updated_time'])
+            updated_time_date = datetime.strptime(document['updated_time'], "%Y-%m-%d %H:%M:%S.%f")
+            if updated_time_date <= final_time_limit_date:
                 logging.info("INFO:" + " " + "Deleting document from collection" + " " + collection)
                 COL.delete_one(document)
     except:
