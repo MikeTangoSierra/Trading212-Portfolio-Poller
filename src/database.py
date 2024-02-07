@@ -1,5 +1,4 @@
 import time
-import schedule
 from functions.transform_data_functions import *
 from functions.get_data_functions import *
 from functions.database_functions import *

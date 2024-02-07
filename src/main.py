@@ -9,7 +9,6 @@ from functions.get_data_functions import *
 # Application Configuration
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
-database_write_start_time = time.monotonic()
 
 # Logging config - This needs some work
 logging.basicConfig(filename='application_debug.log', encoding='utf-8', level=logging.DEBUG)
@@ -51,18 +50,18 @@ def return_current_biggest_winning_position():
     return currently_open_biggest_winner()
 
 
-# # Call our database.py script every 60 seconds from the database_write_start_time
+# Whilst the market is open, run our database.py script every 60 seconds
 # if is_market_open():
 #     while True:
 #         os.system("python /app/src/database.py")
-#         time.sleep(60.0 - ((time.monotonic() - database_write_start_time) % 60.0))
+#         time.sleep(60.0)
 #
 
 # Call our database.py script
 if "test" == "test":
     while True:
         os.system("python /app/src/database.py")
-        time.sleep(60.0 - ((time.monotonic() - database_write_start_time) % 60.0))
+        time.sleep(60.0)
 
 # Query database and return the following stats on different endpoints (use functions in database_functions.py for this, stick to DRY!)
 # Portfolio gain/loss for the quarter
