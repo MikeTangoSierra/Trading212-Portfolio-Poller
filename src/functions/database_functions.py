@@ -9,21 +9,26 @@ LIST_EXISTING_DBS = CLIENT_CONNECTION_STRING.list_database_names()
 
 # Return a list of existing databases in our mongoDB instance.
 def list_existing_databases():
-    return LIST_EXISTING_DBS
+    try:
+        return LIST_EXISTING_DBS
+    except:
+        logging.error("ERROR:" + " " + "Failed to list existing databases")
 
 
 # Return a list of existing collections in a database.
 def list_existing_collections(database):
-    DATABASE = CLIENT_CONNECTION_STRING[database]
-    return DATABASE.list_collection_names()
+    try:
+        DATABASE = CLIENT_CONNECTION_STRING[database]
+        return DATABASE.list_collection_names()
+    except:
+        logging.error("ERROR:" + " " + "Failed to list existing collections")
 
 
 # Insert a document to a mongoDB collection.
 def insert_document_in_mongodb(database, collection, dict):
-    DATABASE = CLIENT_CONNECTION_STRING[database]
-    COL = DATABASE[collection]
-
     try:
+        DATABASE = CLIENT_CONNECTION_STRING[database]
+        COL = DATABASE[collection]
         COL.insert_one(dict)
     except:
         logging.error("ERROR:" + " " + "Failed to insert document into collection" + " " + collection)
@@ -32,15 +37,18 @@ def insert_document_in_mongodb(database, collection, dict):
 # Check if a document exists in our mongoDB collection (based on the date/time the document was written to our
 # collection).
 def check_if_document_exists_in_mongodb(database, collection, dict):
-    DATABASE = CLIENT_CONNECTION_STRING[database]
-    COL = DATABASE[collection]
-    UPDATED_TIME = dict.get('last_updated')
+    try:
+        DATABASE = CLIENT_CONNECTION_STRING[database]
+        COL = DATABASE[collection]
+        UPDATED_TIME = dict.get('last_updated')
 
-    if not UPDATED_TIME == "None":
-        if DATABASE.COL.count_documents({'last_updated': UPDATED_TIME}, limit=1):
-            return True
-        else:
-            return False
+        if not UPDATED_TIME == "None":
+            if DATABASE.COL.count_documents({'last_updated': UPDATED_TIME}, limit=1):
+                return True
+            else:
+                return False
+    except:
+        logging.error("ERROR:" + " " + "Failed to check if document exists in collection" + " " + collection)
 
 
 # Get the biggest winning position for a certain time period.
@@ -59,13 +67,13 @@ def get_losing_winning_position(database, collection, time_period):
 
 # Delete a document from a collection in MongoDB based on its updated_time being greater than time_limit_days.
 def delete_document_from_mongodb(database, collection, time_limit_days):
-    DATABASE = CLIENT_CONNECTION_STRING[database]
-    COL = DATABASE[collection]
-    DOCUMENTS = list(COL.find({}))
-    raw_time_limit_date = datetime.today() - timedelta(days=time_limit_days)
-    final_time_limit_date = datetime.strptime(str(raw_time_limit_date), "%Y-%m-%d %H:%M:%S.%f")
-
     try:
+        DATABASE = CLIENT_CONNECTION_STRING[database]
+        COL = DATABASE[collection]
+        DOCUMENTS = list(COL.find({}))
+        raw_time_limit_date = datetime.today() - timedelta(days=time_limit_days)
+        final_time_limit_date = datetime.strptime(str(raw_time_limit_date), "%Y-%m-%d %H:%M:%S.%f")
+
         for document in DOCUMENTS:
             updated_time_date = datetime.strptime(document['last_updated'], "%Y-%m-%d %H:%M:%S.%f")
             if updated_time_date <= final_time_limit_date:
@@ -80,7 +88,10 @@ def delete_document_from_mongodb(database, collection, time_limit_days):
 # databases, utilise our delete_document_from_mongodb function to loop through each document within the collection
 # and delete those documents that have an updated_time greater than the time_limit_days.
 def clean_up_mongodb(time_limit_days):
-    for database in list_existing_databases():
-        if not database == "admin" or not database == "config" or not database == "local":
-            for collection in list_existing_collections(database):
-                delete_document_from_mongodb(database, collection, time_limit_days)
+    try:
+        for database in list_existing_databases():
+            if not database == "admin" or not database == "config" or not database == "local":
+                for collection in list_existing_collections(database):
+                    delete_document_from_mongodb(database, collection, time_limit_days)
+    except:
+        logging.error("ERROR:" + " " + "Failed to clean up MongoDB")
