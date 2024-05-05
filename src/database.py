@@ -46,5 +46,5 @@ for position in unformatted_open_positions_values:
     if not does_document_exist_in_collection:
         insert_document_in_mongodb(open_positions_db, open_positions_col, open_positions_dict)
 
-# Run our mongoDB cleanup functionality
-clean_up_mongodb(time_limit_days=1)
+# Run our mongoDB cleanup functionality, cleaning up any documents older than 180 days.
+clean_up_mongodb(time_limit_days=180)
