@@ -6,14 +6,14 @@ import logging
 logging.basicConfig(filename='get_data_functions.log', encoding='utf-8', level=logging.DEBUG)
 
 
-# Set our required API Access Info
+# Set our required API Access Info.
 API_TOKEN = os.environ['T212_API_TOKEN']
 BASE_API_PATH = os.environ['T212_BASE_API_PATH']
-EQUITY_BASE_API_PATH = "/equity/"
+EQUITY_BASE_API_PATH = "equity/"
 AUTH_HEADER = {"Authorization": str(API_TOKEN)}
 
 
-# Get account equity info
+# Get account equity info.
 def get_account_equity_info():
     equity_cash_api_endpoint = BASE_API_PATH + EQUITY_BASE_API_PATH + "account/cash"
     account_equity_call = requests.get(equity_cash_api_endpoint, headers=AUTH_HEADER)
@@ -21,7 +21,7 @@ def get_account_equity_info():
     return account_equity_call_json
 
 
-# Get account base currency
+# Get account base currency.
 def get_account_base_currency():
     equity_info_api_endpoint = BASE_API_PATH + EQUITY_BASE_API_PATH + "account/info"
     account_info_call = requests.get(equity_info_api_endpoint, headers=AUTH_HEADER)
@@ -30,7 +30,7 @@ def get_account_base_currency():
     return account_currency
 
 
-# Get portfolio positions
+# Get portfolio positions.
 def get_portfolio_positions():
     portfolio_api_endpoint = BASE_API_PATH + EQUITY_BASE_API_PATH + "portfolio"
     portfolio_call = requests.get(portfolio_api_endpoint, headers=AUTH_HEADER)
