@@ -10,6 +10,8 @@ logging.basicConfig(filename='database.log', encoding='utf-8', level=logging.DEB
 # Call date time function to set current date and time
 write_date_time = get_current_date_and_time()
 
+## I need to handle this for each time period i.e. daily, weekly, monthly, quarterly, yearly into different collections so that I can actually query the data in a meaningful way.
+
 # Set some vars for profit loss
 profit_loss_db = "profit_loss"
 profit_loss_col = "profit_loss"
