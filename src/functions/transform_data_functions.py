@@ -1,5 +1,8 @@
 from functions.get_data_functions import *
+from functions.time_functions import *
 import logging
+from bson import json_util
+import json
 
 # Logging config - This needs some work.
 logging.basicConfig(filename='transform_data_functions.log', encoding='utf-8', level=logging.DEBUG)
@@ -16,8 +19,7 @@ def overall_portfolio_value():
 def overall_profit_loss():
     portfolio_profit_loss = str(get_account_equity_info()['ppl'])
     portfolio_base_currency = str(get_account_base_currency())
-    return portfolio_profit_loss + ":" + " " + portfolio_base_currency
-
+    return portfolio_profit_loss + ":" + portfolio_base_currency
 
 # Call functions from get_data_function to get currently open positions. Loop over our positions and find our biggest
 # losing position.
@@ -45,3 +47,7 @@ def currently_open_biggest_winner():
     biggest_loser_ticker = max(profit_losses, key=profit_losses.get)
     biggest_loser_value = max(profit_losses.values())
     return biggest_loser_ticker + ":" + " " + str(biggest_loser_value)
+
+# Transform BSON data into JSON.
+def bson_to_json(bson_data):
+    return json.loads(json_util.dumps(bson_data))

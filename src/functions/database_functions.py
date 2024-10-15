@@ -1,6 +1,8 @@
+from functions.transform_data_functions import bson_to_json
 import pymongo
 import logging
 from datetime import datetime, timedelta
+
 
 logging.basicConfig(filename='db_functions.log', encoding='utf-8', level=logging.DEBUG)
 CLIENT_CONNECTION_STRING = pymongo.MongoClient("mongodb://mongodb:27017/")
@@ -44,17 +46,64 @@ def check_if_document_exists_in_mongodb(database, collection, dict):
 
 
 # Get the biggest winning position for a certain time period.
-# Use MongoDB queries for this and minimal python code
-# Try something like this https://www.mongodb.com/community/forums/t/fetch-data-with-max-and-between-condition/3973
-def get_biggest_winning_position(database, collection, time_period):
-    print("working on it!")
+# THIS WON'T WORK UNLESS I WRITE EACH POSITION TO A COLLECTION AT THE END OF A QUARTER AND THEN QUERY THAT COLLECTION AGAINST MY TIME PERIOD.
+def get_biggest_winning_position(database, collection, time_period_start, time_period_end):
+    DATABASE = CLIENT_CONNECTION_STRING[database]
+    COL = DATABASE[collection]
 
+    # Query to find the document with the maximum value within the specified time period.
+    FIND_BIGGEST_WINNING_POSITION_QUERY = [
+        {
+            '$match': {
+                'last_updated': {
+                    '$gte': time_period_start,
+                    '$lte': time_period_end
+                }
+            }
+        },
+        {
+            '$sort': {
+                'ppl': -1,  # Assuming 'ppl' is the field representing profit/loss
+                'fxPpl': -1  # Assuming 'fxPpl' is the field representing foreign exchange profit/loss
+            }
+        },
+        {
+            '$limit': 1
+        }
+    ]
+
+    result_json = bson_to_json(list(COL.aggregate(FIND_BIGGEST_WINNING_POSITION_QUERY)))
+    return result_json
 
 # Get the biggest losing position for a certain time period
-# Use MongoDB queries for this and minimal python code
-# Try something like this https://www.mongodb.com/community/forums/t/fetch-data-with-max-and-between-condition/3973
-def get_losing_winning_position(database, collection, time_period):
-    print("working on it!")
+# THIS WON'T WORK UNLESS I WRITE EACH POSITION TO A COLLECTION AT THE END OF A QUARTER AND THEN QUERY THAT COLLECTION AGAINST MY TIME PERIOD.
+def get_losing_winning_position(database, collection, time_period_start, time_period_end):
+    DATABASE = CLIENT_CONNECTION_STRING[database]
+    COL = DATABASE[collection]
+
+    # Query to find the document with the minimum value within the specified time period
+    FIND_BIGGEST_LOSING_POSITION_QUERY = [
+        {
+            '$match': {
+                'last_updated': {
+                    '$gte': time_period_start,
+                    '$lte': time_period_end
+                }
+            }
+        },
+        {
+            '$sort': {
+                'ppl': 1,  # Assuming 'ppl' is the field representing profit/loss
+                'fxPpl': 1  # Assuming 'fxPpl' is the field representing foreign exchange profit/loss
+            }
+        },
+        {
+            '$limit': 1
+        }
+    ]
+
+    result_json = bson_to_json(list(COL.aggregate(FIND_BIGGEST_LOSING_POSITION_QUERY)))
+    return result_json
 
 
 # Delete a document from a collection in MongoDB based on its updated_time being greater than time_limit_days.

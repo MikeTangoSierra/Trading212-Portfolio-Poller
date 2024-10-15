@@ -8,7 +8,7 @@ from functions.time_functions import *
 logging.basicConfig(filename='database.log', encoding='utf-8', level=logging.DEBUG)
 
 # Call date time function to set current date and time
-write_date_time = current_date_and_time()
+write_date_time = get_current_date_and_time()
 
 # Set some vars for profit loss
 profit_loss_db = "profit_loss"
