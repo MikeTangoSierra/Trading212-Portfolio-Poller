@@ -1,10 +1,12 @@
+from datetime import datetime, timedelta
+from functions.logging import *
 from functions.transform_data_functions import bson_to_json
 import pymongo
-import logging
-from datetime import datetime, timedelta
 
+# Setup logging.
+configure_logging('db_functions.log')
 
-logging.basicConfig(filename='db_functions.log', encoding='utf-8', level=logging.DEBUG)
+# Setup our MongoDB client connection string.
 CLIENT_CONNECTION_STRING = pymongo.MongoClient("mongodb://mongodb:27017/")
 LIST_EXISTING_DBS = CLIENT_CONNECTION_STRING.list_database_names()
 
@@ -36,74 +38,80 @@ def insert_document_in_mongodb(database, collection, dict):
 def check_if_document_exists_in_mongodb(database, collection, dict):
     DATABASE = CLIENT_CONNECTION_STRING[database]
     COL = DATABASE[collection]
-    UPDATED_TIME = dict.get('last_updated')
 
-    if not UPDATED_TIME == "None":
-        if DATABASE.COL.count_documents({'last_updated': UPDATED_TIME}, limit=1):
+    try:
+        if COL.find_one(dict):
             return True
         else:
             return False
+    except:
+        logging.error("ERROR:" + " " + "Failed to check if document exists in collection" + " " + collection)
 
 
-# Get the biggest winning position for a certain time period.
-# THIS WON'T WORK UNLESS I WRITE EACH POSITION TO A COLLECTION AT THE END OF A QUARTER AND THEN QUERY THAT COLLECTION AGAINST MY TIME PERIOD.
-def get_biggest_winning_position(database, collection, time_period_start, time_period_end):
-    DATABASE = CLIENT_CONNECTION_STRING[database]
-    COL = DATABASE[collection]
+def get_biggest_winning_position(databases, collections, time_period_start, time_period_end):
 
-    # Query to find the document with the maximum value within the specified time period.
-    FIND_BIGGEST_WINNING_POSITION_QUERY = [
-        {
-            '$match': {
-                'last_updated': {
-                    '$gte': time_period_start,
-                    '$lte': time_period_end
+    for db in databases:
+        DATABASE = CLIENT_CONNECTION_STRING[db]
+
+        for collection in collections:
+            COL = DATABASE[collection]
+            FIND_BIGGEST_WINNING_POSITION_QUERY = [
+                {
+                    '$match': {
+                        'last_updated': {
+                            '$gte': time_period_start,
+                            '$lte': time_period_end
+                        }
+                    }
+                },
+                {
+                    '$sort': {
+                        'ppl': -1,
+                        'fxPpl': -1
+                    }
+                },
+                {
+                    '$limit': 1
                 }
-            }
-        },
-        {
-            '$sort': {
-                'ppl': -1,  # Assuming 'ppl' is the field representing profit/loss
-                'fxPpl': -1  # Assuming 'fxPpl' is the field representing foreign exchange profit/loss
-            }
-        },
-        {
-            '$limit': 1
-        }
-    ]
+            ]
 
-    result_json = bson_to_json(list(COL.aggregate(FIND_BIGGEST_WINNING_POSITION_QUERY)))
-    return result_json
+            result = list(COL.aggregate(FIND_BIGGEST_WINNING_POSITION_QUERY))
+            if result:
+                return bson_to_json(result)
+    return {}
 
-# Get the biggest losing position for a certain time period
-# THIS WON'T WORK UNLESS I WRITE EACH POSITION TO A COLLECTION AT THE END OF A QUARTER AND THEN QUERY THAT COLLECTION AGAINST MY TIME PERIOD.
-def get_losing_winning_position(database, collection, time_period_start, time_period_end):
-    DATABASE = CLIENT_CONNECTION_STRING[database]
-    COL = DATABASE[collection]
 
-    # Query to find the document with the minimum value within the specified time period
-    FIND_BIGGEST_LOSING_POSITION_QUERY = [
-        {
-            '$match': {
-                'last_updated': {
-                    '$gte': time_period_start,
-                    '$lte': time_period_end
+def get_biggest_losing_position(databases, collections, time_period_start, time_period_end):
+
+    for db in databases:
+        DATABASE = CLIENT_CONNECTION_STRING[db]
+
+        for collection in collections:
+            COL = DATABASE[collection]
+            FIND_BIGGEST_LOSING_POSITION_QUERY = [
+                {
+                    '$match': {
+                        'last_updated': {
+                            '$gte': time_period_start,
+                            '$lte': time_period_end
+                        }
+                    }
+                },
+                {
+                    '$sort': {
+                        'ppl': 1,
+                        'fxPpl': 1
+                    }
+                },
+                {
+                    '$limit': 1
                 }
-            }
-        },
-        {
-            '$sort': {
-                'ppl': 1,  # Assuming 'ppl' is the field representing profit/loss
-                'fxPpl': 1  # Assuming 'fxPpl' is the field representing foreign exchange profit/loss
-            }
-        },
-        {
-            '$limit': 1
-        }
-    ]
+            ]
 
-    result_json = bson_to_json(list(COL.aggregate(FIND_BIGGEST_LOSING_POSITION_QUERY)))
-    return result_json
+            result = list(COL.aggregate(FIND_BIGGEST_LOSING_POSITION_QUERY))
+            if result:
+                return bson_to_json(result)
+    return {}
 
 
 # Delete a document from a collection in MongoDB based on its updated_time being greater than time_limit_days.
@@ -130,6 +138,6 @@ def delete_document_from_mongodb(database, collection, time_limit_days):
 # and delete those documents that have an updated_time greater than the time_limit_days.
 def clean_up_mongodb(time_limit_days):
     for database in list_existing_databases():
-        if not database == "admin" or not database == "config" or not database == "local":
+        if not database == "admin" or not database == "config" or not database == "local" or not database == "system":
             for collection in list_existing_collections(database):
                 delete_document_from_mongodb(database, collection, time_limit_days)

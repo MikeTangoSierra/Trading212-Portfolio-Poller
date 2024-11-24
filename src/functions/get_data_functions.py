@@ -1,10 +1,9 @@
-import requests
+from functions.logging import *
 import os
-import logging
+import requests
 
-
-logging.basicConfig(filename='get_data_functions.log', encoding='utf-8', level=logging.DEBUG)
-
+# Setup logging.
+configure_logging('get_data_functions.log')
 
 # Set our required API Access Info.
 API_TOKEN = os.environ['T212_API_TOKEN']
