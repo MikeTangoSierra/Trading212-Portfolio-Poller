@@ -4,11 +4,13 @@ FROM python:alpine3.18
 # Set as placeholder values (T212_API_TOKEN not an actual secret value).
 ARG T212_API_TOKEN="1234adiadimai23923"
 ARG T212_BASE_API_PATH="https://demo.trading212.com/api/v0/"
+ARG RETAIN_DATA_FOR_DAYS=1000
 
 
 # Set ENVS FROM BUILD ARGS (Allow us to set our environment variables dynamically).
 ENV T212_API_TOKEN=$T212_API_TOKEN
 ENV T212_BASE_API_PATH=$T212_BASE_API_PATH
+ENV RETAIN_DATA_FOR_DAYS=$RETAIN_DATA_FOR_DAYS
 
 # Set workdir.
 WORKDIR /app
