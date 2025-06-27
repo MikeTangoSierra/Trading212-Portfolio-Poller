@@ -4,95 +4,77 @@ from datetime import datetime, timedelta
 
 logging.basicConfig(filename='db_functions.log', encoding='utf-8', level=logging.DEBUG)
 CLIENT_CONNECTION_STRING = pymongo.MongoClient("mongodb://mongodb:27017/")
-LIST_EXISTING_DBS = CLIENT_CONNECTION_STRING.list_database_names()
 
-
-# Return a list of existing databases in our mongoDB instance.
 def list_existing_databases():
     try:
-        return LIST_EXISTING_DBS
-    except:
-        logging.error("ERROR:" + " " + "Failed to list existing databases")
+        return CLIENT_CONNECTION_STRING.list_database_names()
+    except Exception as e:
+        logging.error(f"ERROR: Failed to list existing databases: {e}")
+        return []
 
-
-# Return a list of existing collections in a database.
 def list_existing_collections(database):
     try:
-        DATABASE = CLIENT_CONNECTION_STRING[database]
-        return DATABASE.list_collection_names()
-    except:
-        logging.error("ERROR:" + " " + "Failed to list existing collections")
+        return CLIENT_CONNECTION_STRING[database].list_collection_names()
+    except Exception as e:
+        logging.error(f"ERROR: Failed to list collections in DB {database}: {e}")
+        return []
 
-
-# Insert a document to a mongoDB collection.
-def insert_document_in_mongodb(database, collection, dict):
+def check_if_document_exists_in_database(database, collection, document, do_exclude_last_updated_key):
     try:
-        DATABASE = CLIENT_CONNECTION_STRING[database]
-        COL = DATABASE[collection]
-        COL.insert_one(dict)
-    except:
-        logging.error("ERROR:" + " " + "Failed to insert document into collection" + " " + collection)
+        COL = CLIENT_CONNECTION_STRING[database][collection]
+        document_clone = document.copy()
+        document_clone.pop("_id", None)
+        if do_exclude_last_updated_key:
+            document_clone.pop("last_updated", None)
 
+        result = COL.find_one(document_clone)
+        if result:
+            return result.get("_id")  # Return actual _id from DB
+        else:
+            return None
+    except Exception as e:
+        logging.error(f"ERROR checking document existence in {database}.{collection}: {e}")
+        return None
 
-# Check if a document exists in our mongoDB collection (based on the date/time the document was written to our
-# collection).
-def check_if_document_exists_in_mongodb(database, collection, dict):
+def insert_or_update_document_in_database(database, collection, document, existing_document_id):
     try:
-        DATABASE = CLIENT_CONNECTION_STRING[database]
-        COL = DATABASE[collection]
-        UPDATED_TIME = dict.get('last_updated')
+        COL = CLIENT_CONNECTION_STRING[database][collection]
 
-        if not UPDATED_TIME == "None":
-            if DATABASE.COL.count_documents({'last_updated': UPDATED_TIME}, limit=1):
-                return True
-            else:
-                return False
-    except:
-        logging.error("ERROR:" + " " + "Failed to check if document exists in collection" + " " + collection)
+        if existing_document_id is None:
+            logging.debug(f"Inserting into {database}.{collection}: {document}")
+            COL.insert_one(document)
+        else:
+            logging.debug(f"Updating {database}.{collection} (ID: {existing_document_id}): {document}")
+            result = COL.update_one({"_id": existing_document_id}, {"$set": document}, upsert=False)
+            if result.matched_count == 0:
+                logging.warning(f"WARNING: No document found with _id={existing_document_id} to update.")
+    except Exception as e:
+        logging.error(f"ERROR in insert/update for {database}.{collection}: {e}")
 
-
-# Get the biggest winning position for a certain time period.
-# Use MongoDB queries for this and minimal python code
-# Try something like this https://www.mongodb.com/community/forums/t/fetch-data-with-max-and-between-condition/3973
-def get_biggest_winning_position(database, collection, time_period):
-    print("working on it!")
-
-
-# Get the biggest losing position for a certain time period
-# Use MongoDB queries for this and minimal python code
-# Try something like this https://www.mongodb.com/community/forums/t/fetch-data-with-max-and-between-condition/3973
-def get_losing_winning_position(database, collection, time_period):
-    print("working on it!")
-
-
-### The below two functions could probably be merged together at some point.
-# Delete a document from a collection in MongoDB based on its updated_time being greater than time_limit_days.
 def delete_document_from_mongodb(database, collection, time_limit_days):
     try:
-        DATABASE = CLIENT_CONNECTION_STRING[database]
-        COL = DATABASE[collection]
-        DOCUMENTS = list(COL.find({}))
-        raw_time_limit_date = datetime.today() - timedelta(days=time_limit_days)
-        final_time_limit_date = datetime.strptime(str(raw_time_limit_date), "%Y-%m-%d %H:%M:%S.%f")
+        COL = CLIENT_CONNECTION_STRING[database][collection]
+        cutoff = datetime.today() - timedelta(days=time_limit_days)
+        cutoff_str = cutoff.strftime("%Y-%m-%d %H:%M:%S.%f")
 
-        for document in DOCUMENTS:
-            updated_time_date = datetime.strptime(document['last_updated'], "%Y-%m-%d %H:%M:%S.%f")
-            if updated_time_date <= final_time_limit_date:
-                logging.info("INFO:" + " " + "Deleting document from collection" + " " + collection)
-                COL.delete_one(document)
-    except:
-        logging.error("ERROR:" + " " + "Failed to delete document from collection" + " " + collection)
+        for doc in COL.find({}):
+            last_updated = doc.get("last_updated")
+            if last_updated:
+                try:
+                    doc_time = datetime.strptime(last_updated, "%Y-%m-%d %H:%M:%S.%f")
+                    if doc_time <= cutoff:
+                        logging.info(f"Deleting outdated document in {database}.{collection}: {doc.get('_id')}")
+                        COL.delete_one({"_id": doc["_id"]})
+                except ValueError:
+                    logging.warning(f"Invalid date format in doc: {doc}")
+    except Exception as e:
+        logging.error(f"ERROR: Failed to delete old documents in {database}.{collection}: {e}")
 
-
-# Utilising our list_existing_databases function, define a function to loop through the list of existing databases
-# that it returns and for each collection within our databases that are NOT the "admin", "config" or "local"
-# databases, utilise our delete_document_from_mongodb function to loop through each document within the collection
-# and delete those documents that have an updated_time greater than the time_limit_days.
 def clean_up_mongodb(time_limit_days):
     try:
         for database in list_existing_databases():
-            if not database == "admin" or not database == "config" or not database == "local":
+            if database not in ["admin", "config", "local"]:
                 for collection in list_existing_collections(database):
                     delete_document_from_mongodb(database, collection, time_limit_days)
-    except:
-        logging.error("ERROR:" + " " + "Failed to clean up MongoDB")
+    except Exception as e:
+        logging.error(f"ERROR: Failed to clean up MongoDB: {e}")
