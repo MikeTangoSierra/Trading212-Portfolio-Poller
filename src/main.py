@@ -96,8 +96,11 @@ def return_biggest_loser_quarterly():
 
 
 # Whilst the market is open, run our database.py script every 60 seconds to update the database with our statistics.
-os.system("python /app/src/database.py")
-time.sleep(60.0)
+# Whilst the market is open, run our database.py script every 60 seconds to update the database with our statistics.
+if is_market_open():
+    while True:
+        os.system("python /app/src/database.py")
+        time.sleep(60.0)
 
 # Query database and return the following stats on different endpoints (use functions in database_functions.py for
 # this, stick to DRY!) Portfolio gain/loss for the quarter Portfolio gain/loss for the month Portfolio gain/loss for
