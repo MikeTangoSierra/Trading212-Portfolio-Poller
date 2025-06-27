@@ -65,6 +65,7 @@ def get_losing_winning_position(database, collection, time_period):
     print("working on it!")
 
 
+### The below two functions could probably be merged together at some point.
 # Delete a document from a collection in MongoDB based on its updated_time being greater than time_limit_days.
 def delete_document_from_mongodb(database, collection, time_limit_days):
     try:
