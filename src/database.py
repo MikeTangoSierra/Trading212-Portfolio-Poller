@@ -29,7 +29,7 @@ try:
         portfolio_value_db,
         portfolio_value_col,
         portfolio_value_dict,
-        do_exclude_last_updated_key=True
+        do_exclude_last_updated_key=False
     )
 
     insert_or_update_document_in_database(
