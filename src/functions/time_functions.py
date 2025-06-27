@@ -21,7 +21,7 @@ def is_market_open():
         market_open_time = datetime.time(9, 0, 0)
         market_close_time = datetime.time(22, 0, 0)
         current_time = datetime.datetime.now().time()
-        is_time_within_range(market_open_time, market_close_time, current_time)
+        return is_time_within_range(market_open_time, market_close_time, current_time)
     except:
         logging.error("ERROR:" + " " + "Failed to determine if market is open")
 
