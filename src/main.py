@@ -96,8 +96,7 @@ def return_biggest_loser_quarterly():
 
 
 # Whilst the market is open, run our database.py script every 60 seconds to update the database with our statistics.
-# Whilst the market is open, run our database.py script every 60 seconds to update the database with our statistics.
-if is_market_open():
+while is_market_open():
     os.system("python /app/src/database.py")
     time.sleep(60.0)
 

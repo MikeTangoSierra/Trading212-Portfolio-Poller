@@ -170,7 +170,7 @@ def get_year_end_date():
 # Function to figure out if it's Monday to Friday (the market is closed on the weekends).
 def is_a_weekday():
     today = datetime.datetime.today().weekday()
-    return today in range(0, 4)  # Monday to Friday
+    return today in range(0, 5)  # Monday to Friday
 
 # Function to figure out if it's the end of the week.
 def is_end_of_week():
