@@ -5,6 +5,10 @@ from functions.get_data_functions import *
 from functions.time_functions import *
 from functions.transform_data_functions import *
 
+
+### TO DO:
+  ## Wait when a record has "None"/None in it's values because of the Trading212 API's rate limiting.
+
 # Configure logging
 configure_logging('database.log')
 logging.info("Starting data pipeline script...")
