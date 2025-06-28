@@ -1,15 +1,21 @@
 from functions.get_data_functions import *
 import logging
+import time
 
 # Logging config - This needs some work.
 logging.basicConfig(filename='transform_data_functions.log', encoding='utf-8', level=logging.DEBUG)
+
+# Set some variables that we'll use in our functions
+portfolio_base_currency = str(get_account_base_currency())
 
 
 # Call functions from get_data_functions to get portfolio equity (overall).
 def overall_portfolio_value():
     try:
         portfolio_overall_equity = str(get_account_equity_info()['total'])
-        portfolio_base_currency = str(get_account_base_currency())
+        while portfolio_overall_equity == "None" or portfolio_overall_equity == "NONE":
+            time.sleep(10)
+            portfolio_overall_equity = str(get_account_equity_info()['total'])
         return portfolio_overall_equity + ":" + " " + portfolio_base_currency
     except:
         logging.error("ERROR:" + " " + "Failed to get overall portfolio value")
@@ -19,7 +25,9 @@ def overall_portfolio_value():
 def overall_profit_loss():
     try:
         portfolio_profit_loss = str(get_account_equity_info()['ppl'])
-        portfolio_base_currency = str(get_account_base_currency())
+        while portfolio_profit_loss == "None" or portfolio_profit_loss == "NONE":
+            time.sleep(10)
+            portfolio_profit_loss = str(get_account_equity_info()['ppl'])
         return portfolio_profit_loss + ":" + " " + portfolio_base_currency
     except:
         logging.error("ERROR:" + " " + "Failed to get overall profit and loss")
@@ -31,6 +39,10 @@ def currently_open_biggest_loser():
     try:
         profit_losses = {}
         portfolio_positions = get_portfolio_positions()
+
+        while portfolio_positions == {}:
+            time.sleep(10)
+            portfolio_positions = get_portfolio_positions()
 
         for position in portfolio_positions:
             ticker = (position['ticker'])
@@ -51,6 +63,9 @@ def currently_open_biggest_winner():
     try:
         profit_losses = {}
         portfolio_positions = get_portfolio_positions()
+        while portfolio_positions == {}:
+            time.sleep(10)
+            portfolio_positions = get_portfolio_positions()
 
         for position in portfolio_positions:
             ticker = (position['ticker'])
