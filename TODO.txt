@@ -1,0 +1,4 @@
+Left To Do:
+  - Sort out the 'is_market_open' function - I need to check the day, along with the time, derp.
+  - Read from the MongoDB database if we get rate-limited via the Trading212 API.
+  - Make sure that duplicate documents are not written into the MongoDB database.
