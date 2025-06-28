@@ -6,7 +6,7 @@ from functions.transform_data_functions import *
 ### TO DO:
 ## I need to de-duplicate the records that I'm writing to my database. I should come up with a way of setting an ID for a record and if it already exists but some information has changed for the record, then update it.
 ## This needs sorting out before I move on with anything else.
-## I should also make sure to not write a record containing 'NONE' to the databse when the Trading212 API's rate limiting kicks in and returns no data.
+## I should also make sure to not write a record containing 'NONE' to the database when the Trading212 API's rate limiting kicks in and returns no data.
 
 # Set some variables from the environment.
 retain_data_for_days = int(os.environ['RETAIN_DATA_FOR_DAYS'])
