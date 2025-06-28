@@ -1,106 +1,130 @@
+import threading
+import subprocess
+from flask import Flask
 from functions.database_functions import *
 from functions.get_data_functions import *
-from functions.logging import *
+from functions.logging import configure_logging
 from functions.time_functions import *
 from functions.transform_data_functions import *
-import time
-import flask
 
-# Call the logging configuration function.
+# Configure logging
 configure_logging('main_application.log')
 
-# Application Configuration.
-app = flask.Flask(__name__)
+# Initialize Flask app
+app = Flask(__name__)
 app.config["DEBUG"] = True
 
-# Variables.
+# Constants
 open_portfolio_positions_databases = ["open_portfolio_positions"]
-open_portfolio_positions_collections = ["open_portfolio_positions", "open_portfolio_positions_weekly", "open_portfolio_positions_monthly", "open_portfolio_positions_quarterly", "open_portfolio_positions_yearly"]
+open_portfolio_positions_collections = [
+    "open_portfolio_positions",
+    "open_portfolio_positions_weekly",
+    "open_portfolio_positions_monthly",
+    "open_portfolio_positions_quarterly",
+    "open_portfolio_positions_yearly"
+]
+
+# Background thread for periodic database updates
+def update_database_periodically():
+    while True:
+        if is_market_open():
+            try:
+                subprocess.run(["python", "/app/src/database.py"], check=True)
+            except subprocess.CalledProcessError as e:
+                print(f"Error running database update: {e}")
+        time.sleep(60.0)
 
 
-# Get overall portfolio equity and expose it on the /portfoliovalue endpoint.
+# Flask endpoints
 @app.route('/portfolio_value', methods=['GET'])
 def portfolio_value():
-    return overall_portfolio_value()
+    return "test"
 
-
-# Get portfolio profit and loss and expose it on the /profitloss endpoint.
 @app.route('/profit_loss', methods=['GET'])
 def profit_loss():
-    if is_market_open():
-        return "THE MARKET IS OPEN!" + "\n" + overall_profit_loss()
-    else:
-        return "THE MARKET IS CLOSED!" + "\n" + overall_profit_loss() + "\n" + "AS OF MARKET CLOSE!"
+    status = "THE MARKET IS OPEN!" if is_market_open() else "THE MARKET IS CLOSED!\nAS OF MARKET CLOSE!"
+    return f"{status}\n{overall_profit_loss()}"
 
-
-# Get list of positions in the portfolio and expose them on the /portfolio_positions endpoint.
 @app.route('/portfolio_positions', methods=['GET'])
 def return_portfolio_positions():
     return get_portfolio_positions()
 
-
-# Work out what our biggest gain is for the last day and expose it on the /biggest_winner_daily endpoint.
 @app.route('/biggest_winner_daily', methods=['GET'])
 def return_biggest_winner_daily():
-    return get_biggest_winning_position(open_portfolio_positions_databases, open_portfolio_positions_collections, get_day_start_date(),
-                                        get_day_end_date())
+    return get_biggest_winning_position(
+        open_portfolio_positions_databases,
+        open_portfolio_positions_collections,
+        get_day_start_date(),
+        get_day_end_date()
+    )
 
-
-# Work out what our biggest gain is for the last week and expose it on the /biggest_winner_weekly endpoint.
 @app.route('/biggest_winner_weekly', methods=['GET'])
 def return_biggest_winner_weekly():
-    return get_biggest_winning_position(open_portfolio_positions_databases, open_portfolio_positions_collections, get_week_start_date(),
-                                        get_week_end_date())
+    return get_biggest_winning_position(
+        open_portfolio_positions_databases,
+        open_portfolio_positions_collections,
+        get_week_start_date(),
+        get_week_end_date()
+    )
 
-
-# Work out what our biggest gain is for the last month and expose it on the /biggest_winner_monthly endpoint.
 @app.route('/biggest_winner_monthly', methods=['GET'])
 def return_biggest_winner_monthly():
-    return get_biggest_winning_position(open_portfolio_positions_databases, open_portfolio_positions_collections, get_month_start_date(),
-                                        get_month_end_date())
+    return get_biggest_winning_position(
+        open_portfolio_positions_databases,
+        open_portfolio_positions_collections,
+        get_month_start_date(),
+        get_month_end_date()
+    )
 
-
-# Work out what our biggest gain is for the current quarter and expose it on the /biggest_winner_quarterly endpoint.
 @app.route('/biggest_winner_quarterly', methods=['GET'])
 def return_biggest_winner_quarterly():
-    return get_biggest_winning_position(open_portfolio_positions_databases, open_portfolio_positions_collections,
-                                        get_quarter_start_date(), get_quarter_end_date())
+    return get_biggest_winning_position(
+        open_portfolio_positions_databases,
+        open_portfolio_positions_collections,
+        get_quarter_start_date(),
+        get_quarter_end_date()
+    )
 
-
-# Work out what our biggest loss is for the last day and expose it on the /biggest_loser_daily endpoint.
 @app.route('/biggest_loser_daily', methods=['GET'])
 def return_biggest_loser_daily():
-    return get_biggest_losing_position(open_portfolio_positions_databases, open_portfolio_positions_collections, get_day_start_date(),
-                                       get_day_end_date())
+    return get_biggest_losing_position(
+        open_portfolio_positions_databases,
+        open_portfolio_positions_collections,
+        get_day_start_date(),
+        get_day_end_date()
+    )
 
-
-# Work out what our biggest loss is for the last week and expose it on the /biggest_loser_weekly endpoint.
 @app.route('/biggest_loser_weekly', methods=['GET'])
 def return_biggest_loser_weekly():
-    return get_biggest_losing_position(open_portfolio_positions_databases, open_portfolio_positions_collections, get_week_start_date(),
-                                       get_week_end_date())
+    return get_biggest_losing_position(
+        open_portfolio_positions_databases,
+        open_portfolio_positions_collections,
+        get_week_start_date(),
+        get_week_end_date()
+    )
 
-
-# Work out what our biggest loss is for the last month and expose it on the /biggest_loser_monthly endpoint.
 @app.route('/biggest_loser_monthly', methods=['GET'])
 def return_biggest_loser_monthly():
-    return get_biggest_losing_position(open_portfolio_positions_databases, open_portfolio_positions_collections, get_month_start_date(),
-                                       get_month_end_date())
+    return get_biggest_losing_position(
+        open_portfolio_positions_databases,
+        open_portfolio_positions_collections,
+        get_month_start_date(),
+        get_month_end_date()
+    )
 
-
-# Work out what our biggest loss is for the current quarter and expose it on the /biggest_loser_quarterly endpoint.
 @app.route('/biggest_loser_quarterly', methods=['GET'])
 def return_biggest_loser_quarterly():
-    return get_biggest_losing_position(open_portfolio_positions_databases, open_portfolio_positions_collections, get_quarter_start_date(),
-                                       get_quarter_end_date())
+    return get_biggest_losing_position(
+        open_portfolio_positions_databases,
+        open_portfolio_positions_collections,
+        get_quarter_start_date(),
+        get_quarter_end_date()
+    )
 
+# Entry point
+if __name__ == '__main__':
+    # Start background thread for DB updates
+    threading.Thread(target=update_database_periodically, daemon=True).start()
 
-# Whilst the market is open, run our database.py script every 60 seconds to update the database with our statistics.
-while is_market_open():
-    os.system("python /app/src/database.py")
-    time.sleep(60.0)
-
-# Query database and return the following stats on different endpoints (use functions in database_functions.py for
-# this, stick to DRY!) Portfolio gain/loss for the quarter Portfolio gain/loss for the month Portfolio gain/loss for
-# the week Portfolio gain/loss for the day Biggest gain/loss (position) for the quarter Biggest gain/loss (position)
-# for the month Biggest gain/loss (position) for the week Biggest gain/loss (position) for the day
+    # Run Flask app
+    app.run(host='0.0.0.0', port=5000)
