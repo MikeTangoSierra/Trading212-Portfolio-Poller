@@ -38,7 +38,7 @@ def get_account_base_currency():
         account_info_data_json = account_info_call.json()
         account_currency = account_info_data_json.get('currencyCode')
 
-        while account_info_call.status_code != 200 or account_currency == None:
+        while account_info_call.status_code != 200 or account_currency is None:
             time.sleep(10)
             account_info_call = requests.get(equity_info_api_endpoint, headers=AUTH_HEADER)
             account_info_data_json = account_info_call.json()
