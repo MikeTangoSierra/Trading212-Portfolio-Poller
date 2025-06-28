@@ -44,7 +44,7 @@ def currently_open_biggest_loser():
         profit_losses = {}
         portfolio_positions = get_portfolio_positions()
 
-        while portfolio_positions == {}:
+        while portfolio_positions == []:
             time.sleep(10)
             portfolio_positions = get_portfolio_positions()
 
@@ -67,7 +67,7 @@ def currently_open_biggest_winner():
     try:
         profit_losses = {}
         portfolio_positions = get_portfolio_positions()
-        while portfolio_positions == {}:
+        while portfolio_positions == [{}]:
             time.sleep(10)
             portfolio_positions = get_portfolio_positions()
 
