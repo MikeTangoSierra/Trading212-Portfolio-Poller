@@ -21,7 +21,7 @@ open_portfolio_positions_collections = ["open_portfolio_positions", "open_portfo
 # Get overall portfolio equity and expose it on the /portfoliovalue endpoint.
 @app.route('/portfolio_value', methods=['GET'])
 def portfolio_value():
-    return overall_portfolio_value()
+    return "test"
 
 
 # Get portfolio profit and loss and expose it on the /profitloss endpoint.
