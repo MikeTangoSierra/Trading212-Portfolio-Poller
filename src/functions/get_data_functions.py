@@ -19,7 +19,6 @@ def get_account_equity_info():
         equity_cash_api_endpoint = BASE_API_PATH + EQUITY_BASE_API_PATH + "account/cash"
         account_equity_call = requests.get(equity_cash_api_endpoint, headers=AUTH_HEADER)
         account_equity_call_json = account_equity_call.json()
-        print(account_equity_call_json)
 
         while account_equity_call.status_code != 200 or account_equity_call_json is None:
             time.sleep(10)
@@ -38,7 +37,6 @@ def get_account_base_currency():
         account_info_call = requests.get(equity_info_api_endpoint, headers=AUTH_HEADER)
         account_info_data_json = account_info_call.json()
         account_currency = account_info_data_json.get('currencyCode')
-        print(account_currency)
 
         while account_info_call.status_code != 200 or account_currency is None:
             time.sleep(10)
@@ -57,7 +55,6 @@ def get_portfolio_positions():
         portfolio_api_endpoint = BASE_API_PATH + EQUITY_BASE_API_PATH + "portfolio"
         portfolio_call = requests.get(portfolio_api_endpoint, headers=AUTH_HEADER)
         portfolio_data_json = portfolio_call.json()
-        print(portfolio_data_json)
 
         while portfolio_call.status_code != 200 or portfolio_data_json is None:
             portfolio_call = requests.get(portfolio_api_endpoint, headers=AUTH_HEADER)
