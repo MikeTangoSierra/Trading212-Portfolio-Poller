@@ -5,9 +5,11 @@ import time
 # Logging config - This needs some work.
 logging.basicConfig(filename='transform_data_functions.log', encoding='utf-8', level=logging.DEBUG)
 
-# Set some variables that we'll use in our functions
+# Set some variables that we'll use in our functions.
 portfolio_base_currency = str(get_account_base_currency())
-
+while portfolio_base_currency == "None" or portfolio_base_currency == "NONE":
+    time.sleep(10)
+    portfolio_base_currency = str(get_account_base_currency())
 
 # Call functions from get_data_functions to get portfolio equity (overall).
 def overall_portfolio_value():
