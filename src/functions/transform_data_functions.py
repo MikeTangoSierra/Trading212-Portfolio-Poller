@@ -15,6 +15,7 @@ while portfolio_base_currency == "None" or portfolio_base_currency == "NONE":
 def overall_portfolio_value():
     try:
         portfolio_overall_equity = str(get_account_equity_info()['total'])
+        print(portfolio_overall_equity)
         while portfolio_overall_equity == "None" or portfolio_overall_equity == "NONE":
             time.sleep(10)
             portfolio_overall_equity = str(get_account_equity_info()['total'])
@@ -27,6 +28,7 @@ def overall_portfolio_value():
 def overall_profit_loss():
     try:
         portfolio_profit_loss = str(get_account_equity_info()['ppl'])
+        print(portfolio_profit_loss)
         while portfolio_profit_loss == "None" or portfolio_profit_loss == "NONE":
             time.sleep(10)
             portfolio_profit_loss = str(get_account_equity_info()['ppl'])
