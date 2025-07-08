@@ -23,6 +23,14 @@ We currently retrieve the following statistics and expose them on a flask endpoi
 
 - COMING SOON
 
+## Local Devlopment
+The bringing up and down of the local has been abstracted to a Makefile.
+
+`make up` will bring the whole environment up without needing to switch folders.
+
+`make down` will kill and remove the containers.
+
+
 ## Contributing
 
 - COMING SOON
