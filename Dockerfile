@@ -1,4 +1,4 @@
-FROM python:alpine3.18
+FROM python:alpine3.18 AS base
 
 # Set BUILD ARGS (to be overwritten at build time).
 # Set as placeholder values (T212_API_TOKEN not an actual secret value).
@@ -15,10 +15,14 @@ ENV RETAIN_DATA_FOR_DAYS=$RETAIN_DATA_FOR_DAYS
 # Set workdir.
 WORKDIR /app
 
+FROM base AS python_setup
+
 # Copy requirements.txt and use it to install dependencies.
 # I SHOULD GENERATE A NEW requirements.txt before any merge.
 COPY requirements.txt requirements.txt
 RUN pip3 install -r requirements.txt
+
+FROM python_setup AS main
 
 # Copy over everything from current dir
 COPY . .
