@@ -1,12 +1,13 @@
-import os
 import logging
+import os
 from functions.database_functions import *
 from functions.get_data_functions import *
 from functions.time_functions import *
 from functions.transform_data_functions import *
+from src.functions import logging as configurecustomlogging
 
 # Configure logging
-configure_logging('database.log')
+configurecustomlogging.configure_logging('database.log')
 logging.info("Starting data pipeline script...")
 
 # Set environment variable with fallback

@@ -1,8 +1,11 @@
-import pymongo
-import logging
 from datetime import datetime, timedelta
+import logging
+import pymongo
+from src.functions import logging as configurecustomlogging
 
-logging.basicConfig(filename='db_functions.log', encoding='utf-8', level=logging.DEBUG)
+# Configure logging
+configurecustomlogging.configure_logging('database_functions.log')
+
 CLIENT_CONNECTION_STRING = pymongo.MongoClient("mongodb://mongodb:27017/")
 
 def list_existing_databases():

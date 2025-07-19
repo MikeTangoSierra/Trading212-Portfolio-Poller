@@ -1,14 +1,14 @@
-import threading
 import subprocess
+import threading
 from flask import Flask
+from functions import logging as configurecustomlogging
 from functions.database_functions import *
 from functions.get_data_functions import *
-from functions.logging import configure_logging
 from functions.time_functions import *
 from functions.transform_data_functions import *
 
 # Configure logging
-configure_logging('main_application.log')
+configurecustomlogging.configure_logging('main_application.log')
 
 # Initialize Flask app
 app = Flask(__name__)

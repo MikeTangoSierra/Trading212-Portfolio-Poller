@@ -1,9 +1,10 @@
-from functions.get_data_functions import *
 import logging
 import time
+from src.functions import logging as configurecustomlogging
+from src.functions.get_data_functions import *
 
-# Logging config - This needs some work.
-logging.basicConfig(filename='transform_data_functions.log', encoding='utf-8', level=logging.DEBUG)
+# Configure logging
+configurecustomlogging.configure_logging('transform_data_functions.log')
 
 # Set some variables that we'll use in our functions.
 portfolio_base_currency = str(get_account_base_currency())

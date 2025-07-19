@@ -1,10 +1,10 @@
-from functions.logging import *
 import os
 import requests
 import time
+from src.functions import logging as configurecustomlogging
 
-# Setup logging.
-configure_logging('get_data_functions.log')
+# Configure logging
+configurecustomlogging.configure_logging('get_data_functions.log')
 
 # Set our required API Access Info.
 API_TOKEN = os.environ['T212_API_TOKEN']

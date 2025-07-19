@@ -1,9 +1,8 @@
-from functions.logging import *
 import datetime
+from src.functions import logging as configurecustomlogging
 
-# Logging config - This needs some work.
-configure_logging('time_functions.log')
-
+# Configure logging
+configurecustomlogging.configure_logging('time_functions.log')
 
 # A small function to return true if the time is within the current time is within the range (between start and end).
 def is_time_within_range(start, end, current):
