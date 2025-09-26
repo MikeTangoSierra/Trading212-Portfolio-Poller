@@ -2,7 +2,7 @@ version: '3'
 services:
   trading212poller:
     build:
-      context: ../.
+      context: ../..
     ports:
       - "80:5000"
     depends_on:

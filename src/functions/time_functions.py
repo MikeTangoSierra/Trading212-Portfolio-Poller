@@ -1,5 +1,5 @@
 import datetime
-from src.functions import logging as configurecustomlogging
+from functions import logging as configurecustomlogging
 
 # Configure logging
 configurecustomlogging.configure_logging('time_functions.log')

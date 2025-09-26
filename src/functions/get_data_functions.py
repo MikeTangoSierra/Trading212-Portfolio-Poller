@@ -1,7 +1,7 @@
 import os
 import requests
 import time
-from src.functions import logging as configurecustomlogging
+from functions import logging as configurecustomlogging
 
 # Configure logging
 configurecustomlogging.configure_logging('get_data_functions.log')

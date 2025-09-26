@@ -1,22 +1,29 @@
-import subprocess
+import logging
 import threading
+import time
+import subprocess
 from flask import Flask
-from functions import logging as configurecustomlogging
-from functions.database_functions import *
-from functions.get_data_functions import *
+from functions.logging_config import configure_logging
 from functions.time_functions import *
-from functions.transform_data_functions import *
+from functions.database_functions import *
 
-# Configure logging
-configurecustomlogging.configure_logging('main_application.log')
+# -------------------------
+# Configure shared logging
+# -------------------------
+configure_logging("application.log")
+logging.info("Starting Flask application...")
 
-# Initialize Flask app
+# -------------------------
+# Flask app initialization
+# -------------------------
 app = Flask(__name__)
 app.config["DEBUG"] = True
 
+# -------------------------
 # Constants
-open_portfolio_positions_databases = ["open_portfolio_positions"]
-open_portfolio_positions_collections = [
+# -------------------------
+OPEN_PORTFOLIO_DB = ["open_portfolio_positions"]
+OPEN_PORTFOLIO_COLLECTIONS = [
     "open_portfolio_positions",
     "open_portfolio_positions_weekly",
     "open_portfolio_positions_monthly",
@@ -24,18 +31,56 @@ open_portfolio_positions_collections = [
     "open_portfolio_positions_yearly"
 ]
 
-# Background thread for periodic database updates
+# -------------------------
+# Background DB updater
+# -------------------------
 def update_database_periodically():
+    logging.info("Background DB updater thread started.")
     while True:
-        if is_market_open():
-            try:
-                subprocess.run(["python", "/app/src/database.py"], check=True)
-            except subprocess.CalledProcessError as e:
-                print(f"Error running database update: {e}")
-        time.sleep(60.0)
+        logging.info("DB updater heartbeat...")  # always log so we know it's alive
+        try:
+            if is_market_open():
+                logging.info("Market is open — running database.py")
+                try:
+                    result = subprocess.run(
+                        ["python", "database.py"],
+                        capture_output=True,
+                        text=True,
+                        check=True
+                    )
+                    if result.stdout:
+                        logging.info(f"[database.py STDOUT]\n{result.stdout}")
+                    if result.stderr:
+                        logging.error(f"[database.py STDERR]\n{result.stderr}")
+                    logging.info("database.py completed successfully")
+                except subprocess.CalledProcessError as e:
+                    logging.exception(f"database.py failed with error: {e}")
+            else:
+                logging.info("Market closed — skipping database update")
+        except Exception:
+            logging.exception("Unexpected exception in background updater loop")
+        finally:
+            time.sleep(60)
 
 
-# Flask endpoints
+# -------------------------
+# Launch background thread immediately
+# -------------------------
+def launch_background_updater():
+    logging.info("Launching DB updater thread (import-time)")
+    thread = threading.Thread(
+        target=update_database_periodically,
+        name="DBUpdater",
+        daemon=True
+    )
+    thread.start()
+
+# Start it as soon as the module is imported
+launch_background_updater()
+
+# -------------------------
+# Flask routes
+# -------------------------
 @app.route('/portfolio_value', methods=['GET'])
 def portfolio_value():
     return "test"
@@ -52,8 +97,8 @@ def return_portfolio_positions():
 @app.route('/biggest_winner_daily', methods=['GET'])
 def return_biggest_winner_daily():
     return get_biggest_winning_position(
-        open_portfolio_positions_databases,
-        open_portfolio_positions_collections,
+        OPEN_PORTFOLIO_DB,
+        OPEN_PORTFOLIO_COLLECTIONS,
         get_day_start_date(),
         get_day_end_date()
     )
@@ -61,8 +106,8 @@ def return_biggest_winner_daily():
 @app.route('/biggest_winner_weekly', methods=['GET'])
 def return_biggest_winner_weekly():
     return get_biggest_winning_position(
-        open_portfolio_positions_databases,
-        open_portfolio_positions_collections,
+        OPEN_PORTFOLIO_DB,
+        OPEN_PORTFOLIO_COLLECTIONS,
         get_week_start_date(),
         get_week_end_date()
     )
@@ -70,8 +115,8 @@ def return_biggest_winner_weekly():
 @app.route('/biggest_winner_monthly', methods=['GET'])
 def return_biggest_winner_monthly():
     return get_biggest_winning_position(
-        open_portfolio_positions_databases,
-        open_portfolio_positions_collections,
+        OPEN_PORTFOLIO_DB,
+        OPEN_PORTFOLIO_COLLECTIONS,
         get_month_start_date(),
         get_month_end_date()
     )
@@ -79,8 +124,8 @@ def return_biggest_winner_monthly():
 @app.route('/biggest_winner_quarterly', methods=['GET'])
 def return_biggest_winner_quarterly():
     return get_biggest_winning_position(
-        open_portfolio_positions_databases,
-        open_portfolio_positions_collections,
+        OPEN_PORTFOLIO_DB,
+        OPEN_PORTFOLIO_COLLECTIONS,
         get_quarter_start_date(),
         get_quarter_end_date()
     )
@@ -88,8 +133,8 @@ def return_biggest_winner_quarterly():
 @app.route('/biggest_loser_daily', methods=['GET'])
 def return_biggest_loser_daily():
     return get_biggest_losing_position(
-        open_portfolio_positions_databases,
-        open_portfolio_positions_collections,
+        OPEN_PORTFOLIO_DB,
+        OPEN_PORTFOLIO_COLLECTIONS,
         get_day_start_date(),
         get_day_end_date()
     )
@@ -97,8 +142,8 @@ def return_biggest_loser_daily():
 @app.route('/biggest_loser_weekly', methods=['GET'])
 def return_biggest_loser_weekly():
     return get_biggest_losing_position(
-        open_portfolio_positions_databases,
-        open_portfolio_positions_collections,
+        OPEN_PORTFOLIO_DB,
+        OPEN_PORTFOLIO_COLLECTIONS,
         get_week_start_date(),
         get_week_end_date()
     )
@@ -106,8 +151,8 @@ def return_biggest_loser_weekly():
 @app.route('/biggest_loser_monthly', methods=['GET'])
 def return_biggest_loser_monthly():
     return get_biggest_losing_position(
-        open_portfolio_positions_databases,
-        open_portfolio_positions_collections,
+        OPEN_PORTFOLIO_DB,
+        OPEN_PORTFOLIO_COLLECTIONS,
         get_month_start_date(),
         get_month_end_date()
     )
@@ -115,16 +160,14 @@ def return_biggest_loser_monthly():
 @app.route('/biggest_loser_quarterly', methods=['GET'])
 def return_biggest_loser_quarterly():
     return get_biggest_losing_position(
-        open_portfolio_positions_databases,
-        open_portfolio_positions_collections,
+        OPEN_PORTFOLIO_DB,
+        OPEN_PORTFOLIO_COLLECTIONS,
         get_quarter_start_date(),
         get_quarter_end_date()
     )
 
-# Entry point
+# -------------------------
+# Entry point (local runs)
+# -------------------------
 if __name__ == '__main__':
-    # Start background thread for DB updates
-    threading.Thread(target=update_database_periodically, daemon=True).start()
-
-    # Run Flask app
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000, use_reloader=False)
