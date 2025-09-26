@@ -17,8 +17,8 @@ def is_time_within_range(start, end, current):
 # allowances for daylight savings.
 def is_market_open():
     try:
-        market_open_time = datetime.time(9, 0, 0)
-        market_close_time = datetime.time(22, 0, 0)
+        market_open_time = datetime.time(8, 0, 0)
+        market_close_time = datetime.time(21, 0, 0)
         current_time = datetime.datetime.now().time()
         return is_time_within_range(market_open_time, market_close_time, current_time)
     except:
