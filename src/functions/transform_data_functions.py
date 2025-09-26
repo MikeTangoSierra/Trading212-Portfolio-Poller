@@ -1,7 +1,7 @@
 import logging
 import time
-from src.functions import logging as configurecustomlogging
-from src.functions.get_data_functions import *
+from functions import logging as configurecustomlogging
+from functions.get_data_functions import *
 
 # Configure logging
 configurecustomlogging.configure_logging('transform_data_functions.log')

@@ -4,7 +4,7 @@ from functions.database_functions import *
 from functions.get_data_functions import *
 from functions.time_functions import *
 from functions.transform_data_functions import *
-from src.functions import logging as configurecustomlogging
+from functions import logging as configurecustomlogging
 
 # Configure logging
 configurecustomlogging.configure_logging('database.log')
