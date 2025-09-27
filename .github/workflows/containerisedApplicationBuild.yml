@@ -18,7 +18,7 @@ jobs:
         password: ${{ secrets.DOCKER_HUB_CONTAINER_IMAGE_PUSH }}
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag marksouthworth/trading212-portfolio-poller-container-images:$(date +%s) && docker image ls
+      run: docker build . --file Dockerfile --tag ${{ secrets.DOCKER_HUB_USERNAME }}/trading212-portfolio-poller-container-images:$(date +%s) && docker push ${{ secrets.DOCKER_HUB_USERNAME }}/trading212-portfolio-poller-container-images:$(date +%s)
     - uses: actions/checkout@v3
     - name: Package the Helm Chart
       run: helm package containerisation/helm/Trading212PortfolioPoller --app-version $(date +%s) --version $(date +%s)
