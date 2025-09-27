@@ -14,11 +14,11 @@ jobs:
     - name: Docker Login          
       uses: docker/login-action@v3.5.0
       with: 
-        username: ${{ env.DOCKER_HUB_USERNAME }}
+        username: ${{ vars.DOCKER_HUB_USERNAME }}
         password: ${{ secrets.DOCKER_HUB_CONTAINER_IMAGE_PUSH }}
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag docker.io/${{ env.DOCKER_HUB_USERNAME }}/trading212-portfolio-poller-docker-container-image:$(date +%s) && docker image push docker.io/${{ env.DOCKER_HUB_USERNAME }}/trading212-portfolio-poller-docker-container-image:$(date +%s)
+      run: docker build . --file Dockerfile --tag docker.io/${{ vars.DOCKER_HUB_USERNAME }}/trading212-portfolio-poller-docker-container-image:$(date +%s) && docker image push docker.io/${{ vars.DOCKER_HUB_USERNAME }}/trading212-portfolio-poller-docker-container-image:$(date +%s)
     - uses: actions/checkout@v3
     - name: Package the Helm Chart
       run: helm package containerisation/helm/Trading212PortfolioPoller --app-version $(date +%s) --version $(date +%s)
