@@ -42,13 +42,13 @@ jobs:
             --version $TAG
           ls -altr
 
-      # - name: Chart | Push
-      #   uses: appany/helm-oci-chart-releaser@v0.5.0
-      #   with:
-      #     name: my-chart
-      #     repository: appany
-      #     tag: 0.1.0
-      #     path: charts/my-chart # Default charts/{name}
-      #     registry: ghcr.io
-      #     registry_username: ${{ secrets.REGISTRY_USERNAME }}
-      #     registry_password: ${{ secrets.REGISTRY_PASSWORD }}
+      - name: Push Helm Chart
+        uses: appany/helm-oci-chart-releaser@v0.5.0
+        with:
+          name: Trading212PortfolioPoller
+          repository: marksouthworth/trading212-portfolio-poller-helm-chart
+          tag: $TAG
+          path: ./Trading212PortfolioPoller-$TAG
+          registry: docker.io
+          registry_username: ${{ var.DOCKER_HUB_USERNAME }}
+          registry_password: ${{ secrets.DOCKER_HUB_HELM_CHART_PUSH }}
