@@ -50,5 +50,5 @@ jobs:
           tag: $TAG
           path: ./Trading212PortfolioPoller-$TAG
           registry: docker.io
-          registry_username: ${{ var.DOCKER_HUB_USERNAME }}
+          registry_username: ${{ vars.DOCKER_HUB_USERNAME }}
           registry_password: ${{ secrets.DOCKER_HUB_HELM_CHART_PUSH }}
