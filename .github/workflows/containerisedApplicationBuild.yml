@@ -47,4 +47,5 @@ jobs:
           helm package containerisation/helm/Trading212PortfolioPoller \
             --app-version $TAG \
             --version $TAG
-          helm push containerisation/helm/Trading212PortfolioPoller/Trading212PortfolioPoller-$TAG.tgz oci://docker.io/marksouthworth/trading212-portfolio-poller-helm-chart
+          ls -altr  
+          helm push Trading212PortfolioPoller-$TAG.tgz oci://docker.io/marksouthworth/trading212-portfolio-poller-helm-chart
