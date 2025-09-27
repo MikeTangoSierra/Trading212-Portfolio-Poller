@@ -1,5 +1,5 @@
 apiVersion: v2
-name: Trading212PortfolioPoller
+name: marksouthworth/trading212-portfolio-poller-helm-chart
 description: A Helm chart for deploying the 'Trading212PortfolioPoller' application to Kubernetes
 type: application
 version: 1.0.0
