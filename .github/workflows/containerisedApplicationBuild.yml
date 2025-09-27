@@ -18,7 +18,7 @@ jobs:
         password: ${{ secrets.DOCKER_HUB_CONTAINER_IMAGE_PUSH }}
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag trading212poller:$(date +%s) && docker push docker.io/library/trading212poller:$(date +%s)
+      run: docker build . --file Dockerfile --tag trading212poller:$(date +%s) && docker image ls
     - uses: actions/checkout@v3
     - name: Package the Helm Chart
       run: helm package containerisation/helm/Trading212PortfolioPoller --app-version $(date +%s) --version $(date +%s)
