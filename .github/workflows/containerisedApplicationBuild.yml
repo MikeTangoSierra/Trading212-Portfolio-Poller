@@ -36,13 +36,10 @@ jobs:
           docker build . -f Dockerfile -t $IMAGE
           docker push $IMAGE
 
-      - name: Helm Login
+      - name: Package & Push Helm Chart
         run: |
           echo "Logging into the Docker Registry (Helm)" 
           helm registry login docker.io -u ${{ vars.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_HELM_CHART_PUSH }}
-
-      - name: Package & Push Helm Chart
-        run: |
           echo "Packaging Helm chart with version $TAG"
           helm package containerisation/helm/Trading212PortfolioPoller \
             --app-version $TAG \
