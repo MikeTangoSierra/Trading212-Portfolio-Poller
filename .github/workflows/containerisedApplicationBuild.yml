@@ -15,8 +15,10 @@ jobs:
         run: |
           TAG=$(date +%s)
           IMAGE_FULL_NAME=${{ vars.DOCKER_HUB_USERNAME }}/trading212-portfolio-poller-docker-container-image:$TAG
+          HELM_EXPERIMENTAL_OCI=1
           echo "TAG=$TAG" >> $GITHUB_ENV
           echo "IMAGE=$IMAGE_FULL_NAME" >> $GITHUB_ENV
+          echo "HELM_EXPERIMENTAL_OCI >> $GITHUB_ENV"
           
       - name: Checkout source code
         uses: actions/checkout@v3
@@ -34,21 +36,15 @@ jobs:
           docker build . -f Dockerfile -t $IMAGE
           docker push $IMAGE
 
-      - name: Package Helm Chart
+      - name: Helm Login
+        run: |
+          echo "Logging into the Docker Registry (Helm)" 
+          helm registry login docker.io -u ${{ vars.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_HELM_CHART_PUSH }}
+
+      - name: Package & Push Helm Chart
         run: |
           echo "Packaging Helm chart with version $TAG"
           helm package containerisation/helm/Trading212PortfolioPoller \
             --app-version $TAG \
             --version $TAG
-          ls -altr
-
-      - name: Push Helm Chart
-        uses: appany/helm-oci-chart-releaser@v0.5.0
-        with:
-          name: Trading212PortfolioPoller
-          repository: marksouthworth/trading212-portfolio-poller-helm-chart
-          tag: $TAG
-          path: Trading212PortfolioPoller-$TAG.tgz
-          registry: docker.io
-          registry_username: ${{ vars.DOCKER_HUB_USERNAME }}
-          registry_password: ${{ secrets.DOCKER_HUB_HELM_CHART_PUSH }}
+          helm push Trading212PortfolioPoller-$TAG oci://docker.io/marksouthworth/trading212-portfolio-poller-helm-chart
