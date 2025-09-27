@@ -33,7 +33,7 @@ jobs:
 
       - name: Build & Push Docker image
         run: |
-          echo "Building Docker image: $IMAGE"
+          echo "Building Docker image"
           docker build . -f Dockerfile -t $IMAGE
           docker push $IMAGE
 
@@ -46,11 +46,10 @@ jobs:
 
       - name: Package & Push Helm Chart
         run: |
-          echo "Packaging Helm chart with version $CHART_VERSION"
+          echo "Packaging Helm chart with version"
           helm package containerisation/helm/Trading212PortfolioPoller \
             --app-version $CHART_VERSION \
             --version $CHART_VERSION
-          
           CHART_PACKAGE=$(ls trading212-portfolio-poller-*.tgz | head -n 1)
           echo "Pushing chart: $CHART_PACKAGE"
           helm push $CHART_PACKAGE oci://docker.io/${{ vars.DOCKER_HUB_USERNAME }}
