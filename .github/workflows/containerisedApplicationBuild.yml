@@ -48,7 +48,7 @@ jobs:
           name: Trading212PortfolioPoller
           repository: marksouthworth/trading212-portfolio-poller-helm-chart
           tag: $TAG
-          path: ./Trading212PortfolioPoller-$TAG
+          path: Trading212PortfolioPoller-$TAG.tgz
           registry: docker.io
           registry_username: ${{ vars.DOCKER_HUB_USERNAME }}
           registry_password: ${{ secrets.DOCKER_HUB_HELM_CHART_PUSH }}
