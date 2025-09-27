@@ -15,10 +15,11 @@ jobs:
         run: |
           TAG=$(date +%s)
           IMAGE_FULL_NAME=${{ vars.DOCKER_HUB_USERNAME }}/trading212-portfolio-poller-docker-container-image:$TAG
-          HELM_EXPERIMENTAL_OCI=1
+          CHART_VERSION=0.1.$TAG
           echo "TAG=$TAG" >> $GITHUB_ENV
           echo "IMAGE=$IMAGE_FULL_NAME" >> $GITHUB_ENV
-          echo "HELM_EXPERIMENTAL_OCI >> $GITHUB_ENV"
+          echo "CHART_VERSION=$CHART_VERSION" >> $GITHUB_ENV
+          echo "HELM_EXPERIMENTAL_OCI=1" >> $GITHUB_ENV
           
       - name: Checkout source code
         uses: actions/checkout@v3
@@ -36,13 +37,19 @@ jobs:
           docker build . -f Dockerfile -t $IMAGE
           docker push $IMAGE
 
+      - name: Helm Login
+        run: |
+          echo "Logging into Docker Registry for Helm"
+          helm registry login docker.io \
+            -u ${{ vars.DOCKER_HUB_USERNAME }} \
+            -p ${{ secrets.DOCKER_HUB_HELM_CHART_PUSH }}
+
       - name: Package & Push Helm Chart
         run: |
-          echo "Logging into the Docker Registry (Helm)" 
-          helm registry login docker.io -u ${{ vars.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_HELM_CHART_PUSH }}
-          echo "Packaging Helm chart with version $TAG"
+          echo "Packaging Helm chart with version $CHART_VERSION"
           helm package containerisation/helm/Trading212PortfolioPoller \
-            --app-version $TAG \
-            --version $TAG
-          ls -altr  
-          helm push trading212-portfolio-poller-helm-chart-$TAG.tgz oci://docker.io/marksouthworth/trading212-portfolio-poller-helm-chart
+            --app-version $CHART_VERSION \
+            --version $CHART_VERSION
+          CHART_PACKAGE=$(ls trading212-portfolio-poller-*.tgz | head -n 1)
+          echo "Pushing chart: $CHART_PACKAGE"
+          helm push $CHART_PACKAGE oci://docker.io/${{ vars.DOCKER_HUB_USERNAME }}/trading212-portfolio-poller-helm-chart
