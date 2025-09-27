@@ -31,10 +31,11 @@ jobs:
           echo "IMAGE=$IMAGE" >> $GITHUB_ENV
           echo "TAG=$TAG" >> $GITHUB_ENV
 
-      - name: Package Helm Chart
+      - name: Package & Push Helm Chart
         run: |
           VERSION=0.1.$TAG
           echo "Packaging Helm chart with version $VERSION"
           helm package containerisation/helm/Trading212PortfolioPoller \
             --app-version $VERSION \
             --version $VERSION
+          ls -altr  
