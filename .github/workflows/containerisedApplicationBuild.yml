@@ -16,6 +16,7 @@ jobs:
       with: 
         username: ${{ vars.DOCKER_HUB_USERNAME }}
         password: ${{ secrets.DOCKER_HUB_CONTAINER_IMAGE_PUSH }}
+        logout: false
     - uses: actions/checkout@v3
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag ${{ vars.DOCKER_HUB_USERNAME }}/trading212-portfolio-poller-docker-container-image:$(date +%s) && docker image ls && docker image push ${{ vars.DOCKER_HUB_USERNAME }}/trading212-portfolio-poller-docker-container-image:$(date +%s)
