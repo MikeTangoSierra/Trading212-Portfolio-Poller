@@ -48,4 +48,4 @@ jobs:
             --app-version $TAG \
             --version $TAG
           ls -altr  
-          helm push Trading212PortfolioPoller-$TAG.tgz oci://docker.io/marksouthworth/trading212-portfolio-poller-helm-chart
+          helm push trading212-portfolio-poller-helm-chart-$TAG.tgz oci://docker.io/marksouthworth/trading212-portfolio-poller-helm-chart
