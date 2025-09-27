@@ -30,8 +30,8 @@ jobs:
 
       - name: Build & Push Docker image
         run: |
-          echo "Building Docker image: $IMAGE_FULL_NAME"
-          docker build . -f Dockerfile -t $IMAGE_FULL_NAME
+          echo "Building Docker image: $IMAGE"
+          docker build . -f Dockerfile -t $IMAGE
           docker push $IMAGE
 
       - name: Package Helm Chart
