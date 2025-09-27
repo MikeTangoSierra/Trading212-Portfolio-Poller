@@ -11,6 +11,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Setup
+        run: |
+          TAG=$(date +%s)
+          IMAGE_FULL_NAME=${{ vars.DOCKER_HUB_USERNAME }}/trading212-portfolio-poller-docker-container-image:$TAG
+          echo "TAG=$TAG" >> $GITHUB_ENV
+          echo "IMAGE=$IMAGE_FULL_NAME" >> $GITHUB_ENV
+          
       - name: Checkout source code
         uses: actions/checkout@v3
 
@@ -23,19 +30,25 @@ jobs:
 
       - name: Build & Push Docker image
         run: |
-          TAG=$(date +%s)
-          IMAGE=${{ vars.DOCKER_HUB_USERNAME }}/trading212-portfolio-poller-docker-container-image:$TAG
-          echo "Building Docker image: $IMAGE"
-          docker build . -f Dockerfile -t $IMAGE
+          echo "Building Docker image: $IMAGE_FULL_NAME"
+          docker build . -f Dockerfile -t $IMAGE_FULL_NAME
           docker push $IMAGE
-          echo "IMAGE=$IMAGE" >> $GITHUB_ENV
-          echo "TAG=$TAG" >> $GITHUB_ENV
 
-      - name: Package & Push Helm Chart
+      - name: Package Helm Chart
         run: |
-          VERSION=0.1.$TAG
-          echo "Packaging Helm chart with version $VERSION"
+          echo "Packaging Helm chart with version $TAG"
           helm package containerisation/helm/Trading212PortfolioPoller \
-            --app-version $VERSION \
-            --version $VERSION
-          ls -altr  
+            --app-version $TAG \
+            --version $TAG
+          ls -altr
+
+      # - name: Chart | Push
+      #   uses: appany/helm-oci-chart-releaser@v0.5.0
+      #   with:
+      #     name: my-chart
+      #     repository: appany
+      #     tag: 0.1.0
+      #     path: charts/my-chart # Default charts/{name}
+      #     registry: ghcr.io
+      #     registry_username: ${{ secrets.REGISTRY_USERNAME }}
+      #     registry_password: ${{ secrets.REGISTRY_PASSWORD }}
