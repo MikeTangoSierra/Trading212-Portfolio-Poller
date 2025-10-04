@@ -1,30 +1,28 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "Trading212PortfolioPoller.fullname" . }}
+  name: {{ include "trading212poller.fullname" . }}
   labels:
-    {{- include "Trading212PortfolioPoller.labels" . | nindent 4 }}
+    {{- include "trading212poller.labels" . | nindent 4 }}
 spec:
-  {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
-  {{- end }}
   selector:
     matchLabels:
-      {{- include "Trading212PortfolioPoller.selectorLabels" . | nindent 6 }}
+      {{- include "trading212poller.selectorLabels" . | nindent 6 }}
   template:
     metadata:
+      labels:
+        {{- include "trading212poller.selectorLabels" . | nindent 8 }}
       {{- with .Values.podAnnotations }}
       annotations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      labels:
-        {{- include "Trading212PortfolioPoller.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "Trading212PortfolioPoller.serviceAccountName" . }}
+      serviceAccountName: {{ include "trading212poller.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:

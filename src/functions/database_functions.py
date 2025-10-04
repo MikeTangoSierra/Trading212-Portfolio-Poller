@@ -1,12 +1,21 @@
 from datetime import datetime, timedelta
 import logging
+import os
 import pymongo
 from functions import logging as configurecustomlogging
+
+# Set some variables that we'll use to connect to the MongoDB database.
+mongo_host = os.environ.get("MONGO_HOST", "mongodb:27017")
+mongo_user = os.environ.get("MONGO_USER", "")
+mongo_pass = os.environ.get("MONGO_PASSWORD", "")
 
 # Configure logging
 configurecustomlogging.configure_logging('database_functions.log')
 
-CLIENT_CONNECTION_STRING = pymongo.MongoClient("mongodb://mongodb:27017/")
+# Authenticated client; no database specified
+CLIENT_CONNECTION_STRING = pymongo.MongoClient(
+    f"mongodb://{mongo_user}:{mongo_pass}@{mongo_host}?authSource=auth"
+)
 
 def list_existing_databases():
     try:
