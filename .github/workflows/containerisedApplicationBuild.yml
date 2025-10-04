@@ -5,16 +5,51 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
-  workflow_dispatch:  
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag trading212poller:$(date +%s)
+      - name: Setup
+        run: |
+          TAG=$(date +%s)
+          IMAGE_FULL_NAME=${{ vars.DOCKER_HUB_USERNAME }}/trading212-portfolio-poller-docker-container-image:$TAG
+          CHART_VERSION=0.1.$TAG
+          echo "TAG=$TAG" >> $GITHUB_ENV
+          echo "IMAGE=$IMAGE_FULL_NAME" >> $GITHUB_ENV
+          echo "CHART_VERSION=$CHART_VERSION" >> $GITHUB_ENV
+          echo "HELM_EXPERIMENTAL_OCI=1" >> $GITHUB_ENV
+          
+      - name: Checkout source code
+        uses: actions/checkout@v3
 
-    - uses: actions/checkout@v3
-    - name: Package the Helm Chart
-      run: helm package containerisation/helm/Trading212PortfolioPoller --app-version $(date +%s) --version $(date +%s)
+      - name: Docker Login
+        uses: docker/login-action@v3.5.0
+        with:
+          username: ${{ vars.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_CONTAINER_IMAGE_PUSH }}
+          logout: false
+
+      - name: Build & Push Docker image
+        run: |
+          echo "Building Docker image"
+          docker build . -f Dockerfile -t $IMAGE
+          docker push $IMAGE
+
+      - name: Helm Login
+        run: |
+          echo "Logging into Docker Registry for Helm"
+          helm registry login docker.io \
+            -u ${{ vars.DOCKER_HUB_USERNAME }} \
+            -p ${{ secrets.DOCKER_HUB_HELM_CHART_PUSH }}
+
+      - name: Package & Push Helm Chart
+        run: |
+          echo "Packaging Helm chart with version"
+          helm package containerisation/helm/Trading212PortfolioPoller \
+            --app-version $CHART_VERSION \
+            --version $CHART_VERSION
+          CHART_PACKAGE=$(ls trading212-portfolio-poller-*.tgz | head -n 1)
+          echo "Pushing chart: $CHART_PACKAGE"
+          helm push $CHART_PACKAGE oci://docker.io/${{ vars.DOCKER_HUB_USERNAME }}
