@@ -45,6 +45,20 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: trading212poller-secrets
+              mountPath: "/mnt/secrets-store"
+              readOnly: true
+          envFrom:
+            - secretRef:
+                name: trading212poller-secret
+      volumes:
+        - name: trading212poller-secrets
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: trading212poller-spc
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
