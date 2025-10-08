@@ -47,9 +47,9 @@ jobs:
       - name: Package & Push Helm Chart
         run: |
           echo "Packaging Helm chart with version"
-          helm package containerisation/helm/Trading212PortfolioPoller \
+          helm package containerisation/helm/trading212poller \
             --app-version $CHART_VERSION \
             --version $CHART_VERSION
-          CHART_PACKAGE=$(ls trading212-portfolio-poller-*.tgz | head -n 1)
+          CHART_PACKAGE=$(ls trading212portfoliopoller-*.tgz | head -n 1)
           echo "Pushing chart: $CHART_PACKAGE"
           helm push $CHART_PACKAGE oci://docker.io/${{ vars.DOCKER_HUB_USERNAME }}
