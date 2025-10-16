@@ -14,9 +14,21 @@ fullnameOverride: "trading212poller"
 serviceAccount:
   create: true
   annotations: {}
-  name: "trading212poller-sa"
+  name: "trading212-portfolio-poller-sa"
 
-podAnnotations: {}
+podAnnotations:
+  vault.hashicorp.com/agent-inject: 'true'
+  vault.hashicorp.com/role: 'trading212-portfolio-poller'
+  vault.hashicorp.com/agent-inject-secret-config: 'kv/data/trading212-portfolio-poller'
+  # Environment variable export template
+  vault.hashicorp.com/agent-inject-template-config: |
+    {{- with secret "kv/data/trading212-portfolio-poller" -}}
+      export MONGO_HOST="{{ .Data.data.MONGO_HOST }}"
+      export MONGO_HOST="{{ .Data.data.MONGO_USER }}"
+      export MONGO_HOST="{{ .Data.data.MONGO_PASSWORD }}"
+      export MONGO_HOST="{{ .Data.data.T212_API_TOKEN }}"
+      export MONGO_HOST="{{ .Data.data.T212_BASE_API_PATH }}"
+    {{- end }}
 
 service:
   type: ClusterIP
