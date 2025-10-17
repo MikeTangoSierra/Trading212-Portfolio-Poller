@@ -24,7 +24,4 @@ RUN pip3 install --no-cache-dir -r requirements.txt
 FROM python_setup AS main
 COPY src/ .
 EXPOSE 5000
-#CMD ["python3", "-m", "flask", "--app", "main", "run", "--host=0.0.0.0"]
-
-# Testing CMD: echo all environment variables
-CMD ["sh", "-c", "echo 'Environment variables:' && env && exec python3 -m flask --app main run --host=0.0.0.0"]
+CMD ["sh", "-c", "source /vault/secrets/config && python3 -m flask --app main run --host=0.0.0.0"]
