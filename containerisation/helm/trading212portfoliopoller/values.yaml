@@ -3,7 +3,7 @@ replicaCount: 1
 image:
   repository: marksouthworth/trading212-portfolio-poller-docker-container-image
   pullPolicy: IfNotPresent
-  tag: "1759002866"
+  tag: "1760732582"
 
 imagePullSecrets: []
 
