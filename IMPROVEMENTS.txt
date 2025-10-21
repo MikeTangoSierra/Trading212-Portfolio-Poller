@@ -1,0 +1,5 @@
+- The market is closed on a weekend, I need to make changes to show this.
+- I should remove all the portfolio value records out of MongoDB and just keep the last one for the day, I don't need to keep all of them.
+- I need to sort out the writing of duplicate keys because there's still errors, like;
+  - 2025-10-21 14:17:50,831 ERROR:Error in insert/update for open_portfolio_positions.open_portfolio_positions_daily: E11000 duplicate key error collection: open_portfolio_positions.open_portfolio_positions_daily index: _id_ dup key: { _id: "SMGBl_EQ" }, full error: {'index': 0, 'code': 11000, 'errmsg': 'E11000 duplicate key error collection: open_portfolio_positions.open_portfolio_positions_daily index: _id_ dup key: { _id: "SMGBl_EQ" }', 'keyPattern': {'_id': 1}, 'keyValue': {'_id': 'SMGBl_EQ'}}
+- Sort out the port for the ingress.
