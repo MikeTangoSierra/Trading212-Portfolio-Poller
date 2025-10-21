@@ -13,7 +13,7 @@ mongo_pass = os.environ.get("MONGO_PASSWORD")
 
 if mongo_user and mongo_pass:
     # Authenticated connection
-    mongo_uri = f"mongodb://{mongo_user}:{mongo_pass}@{mongo_host}:27017?authSource=admin"
+    mongo_uri = f"mongodb://{mongo_user}:{mongo_pass}@{mongo_host}:27017/?authSource=admin"
 else:
     # No auth (local/dev)
     mongo_uri = f"mongodb://{mongo_host}"
