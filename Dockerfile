@@ -24,4 +24,4 @@ RUN pip3 install --no-cache-dir -r requirements.txt
 FROM python_setup AS main
 COPY src/ .
 EXPOSE 5000
-CMD ["sh", "-c", "sleep 30 && source /vault/secrets/config && python3 -m flask --app main run --host=0.0.0.0"]
+CMD ["sh", "-c", "source /vault/secrets/config && python3 -m flask --app main run --host=0.0.0.0"]
