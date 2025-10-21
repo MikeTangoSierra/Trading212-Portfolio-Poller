@@ -7,13 +7,13 @@ from functions import logging as configurecustomlogging
 # Configure logging
 configurecustomlogging.configure_logging('database_functions.log')
 
-mongo_host = os.environ.get("MONGO_HOST", "mongodb:27017")
+mongo_host = os.environ.get("MONGO_HOST", "mongodb")
 mongo_user = os.environ.get("MONGO_USER")
 mongo_pass = os.environ.get("MONGO_PASSWORD")
 
 if mongo_user and mongo_pass:
     # Authenticated connection
-    mongo_uri = f"mongodb://{mongo_user}:{mongo_pass}@{mongo_host}?authSource=admin"
+    mongo_uri = f"mongodb://{mongo_user}:{mongo_pass}@{mongo_host}:27017?authSource=admin"
 else:
     # No auth (local/dev)
     mongo_uri = f"mongodb://{mongo_host}"
